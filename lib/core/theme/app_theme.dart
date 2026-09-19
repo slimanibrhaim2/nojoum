@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color _primary = Color(0xFF6C4DF6);
-  static const Color _secondary = Color(0xFFFFB300);
+  static const Color _primary = Colors.deepPurple;
+  static const Color _secondary = Colors.purple;
 
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
@@ -32,7 +32,7 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: scheme.surface,
         foregroundColor: scheme.onSurface,
-        elevation: 0,
+        elevation: 1,
         centerTitle: false,
       ),
       inputDecorationTheme: InputDecorationTheme(

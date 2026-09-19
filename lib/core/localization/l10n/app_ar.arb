@@ -1,0 +1,9 @@
+{
+  "@@locale": "ar",
+
+  "appName": "نجوم",
+  "welcomeBack": "أهلاً بعودتك",
+  "signInToContinue": "سجّل الدخول للمتابعة",
+  "switchToArabic": "العربية",
+  "switchToEnglish": "English"
+}
