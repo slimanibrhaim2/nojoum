@@ -1,29 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nojoum/core/localization/l10n/locale_provider.dart';
+import 'package:nojoum/core/router/app_router.dart';
 import 'package:nojoum/core/theme/theme_provider.dart';
+import 'package:nojoum/features/auth/data/auth_repository.dart';
+import 'package:nojoum/features/auth/data/auth_repository_mock.dart';
+import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/localization/l10n/app_localizations.dart';
+import 'features/public/public_home_screen.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  final AuthRepository authRepository = AuthRepositoryMock();
+
   runApp(
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_)=>LocaleProvider()),
           ChangeNotifierProvider(create: (_)=>ThemeProvider()),
+          Provider<AuthRepository>.value(value: authRepository,),
+          ChangeNotifierProvider(create: (_)=>AuthViewModel(authRepository)..init(),
+          ),
         ],
         child: const MyApp(),
       )
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  @override
+  class MyApp extends StatefulWidget {
+    const MyApp({super.key});
+  
+    @override
+    State<MyApp> createState() => _MyAppState();
+  }
+  
+  class _MyAppState extends State<MyApp> {
+
+    late final GoRouter _router;
+
+      @override
+      void initState(){
+        super.initState();
+        _router= AppRouter.create(context);
+      }
+    @override
   Widget build(BuildContext context) {
     final localProvider =context.watch<LocaleProvider>();
     final themeProvider= context.watch<ThemeProvider>();
@@ -48,56 +74,8 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      home: const HomePage(),
+      home: const PublicHomeScreen(),
     );
   }
-}
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-    final localeProvider = context.watch<LocaleProvider>();
-    final themeProvider = context.watch<ThemeProvider>();
-
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(t.appName),
-        actions: [
-          TextButton.icon(
-              onPressed: localeProvider.toggle,
-              icon: Icon( Icons.language),
-              label: Text(localeProvider.isArabic ? t.switchToEnglish : t.switchToArabic,),
-          ),
-          IconButton(
-            onPressed: themeProvider.cycle,
-            icon: Icon(
-              themeProvider.isDark
-                  ? Icons.dark_mode
-                  : themeProvider.isLight
-                  ? Icons.light_mode
-                  : Icons.brightness_auto,
-            ),
-            tooltip: themeProvider.mode.name,
-          ),
-
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(t.welcomeBack,
-                style: Theme.of(context).textTheme.headlineMedium),
-            const SizedBox(height: 8),
-            Text(t.signInToContinue,
-                style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
-      ),
-    );
   }
-}
