@@ -1,9 +1,18 @@
 {
   "@@locale": "ar",
-
   "appName": "نجوم",
   "welcomeBack": "أهلاً بعودتك",
   "signInToContinue": "سجّل الدخول للمتابعة",
   "switchToArabic": "العربية",
-  "switchToEnglish": "English"
+  "switchToEnglish": "English",
+  "splashTagline": "نجوم، كف، وفنجان",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "login": "تسجيل الدخول",
+  "logout": "تسجيل الخروج",
+  "invalidEmail": "أدخل بريداً إلكترونياً صالحاً",
+  "passwordTooShort": "كلمة المرور قصيرة جداً",
+  "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+  "forecasterLoginTip": "للتجربة: استخدم {email} للدخول كمنجّم",
+  "dashboard": "لوحة التحكم"
 }

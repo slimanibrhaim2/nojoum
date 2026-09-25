@@ -13,7 +13,7 @@ class AuthRepositoryMock implements AuthRepository {
 
     // Any password works except "wrong" — lets us test the error path.
     if (password == 'wrong') {
-      throw Exception('Invalid email or password');
+      throw Exception('invalidCredentials');
     }
 
     // Role is decided by email: contains "fore" → forecaster.

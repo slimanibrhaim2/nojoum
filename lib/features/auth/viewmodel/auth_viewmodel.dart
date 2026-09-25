@@ -23,7 +23,11 @@ class AuthViewModel extends ChangeNotifier {
   bool get isForecaster => _currentUser?.role == UserRole.forecaster;
 
   Future<void> init() async {
-    final existing = await _repo.currentUser();
+    final results = await Future.wait([
+      _repo.currentUser(),
+      Future<void>.delayed(const Duration(milliseconds: 5000)),
+    ]);
+    final existing = results[0] as User?;
     _currentUser = existing;
     _status = existing == null
         ? AuthStatus.unauthenticated
@@ -43,14 +47,15 @@ class AuthViewModel extends ChangeNotifier {
       final user = await _repo.login(email: email, password: password);
       _currentUser = user;
       _status = AuthStatus.authenticated;
+      _busy = false;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString().replaceFirst('Exception: ', '');
       _status = AuthStatus.unauthenticated;
-      return false;
-    } finally {
       _busy = false;
       notifyListeners();
+      return false;
     }
   }
 

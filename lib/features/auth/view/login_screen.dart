@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/localization/l10n/app_localizations.dart';
+import '../../../core/router/app_routes.dart';
 import '../viewmodel/auth_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController(text: 'user@test.com');
   final _passwordCtrl = TextEditingController(text: '123456');
 
+  static const _forecasterDemoEmail = 'fore@test.com';
+
   @override
   void dispose() {
     _emailCtrl.dispose();
@@ -26,11 +30,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final vm = context.read<AuthViewModel>();
-    await vm.login(
+    final ok = await vm.login(
       email: _emailCtrl.text.trim(),
       password: _passwordCtrl.text,
     );
-    // Router will redirect automatically on success.
+    if (!ok || !mounted) return;
+
+    if (vm.isForecaster) {
+      context.go(AppRoutes.forecasterDashboard);
+    } else {
+      context.go(AppRoutes.publicHome);
+    }
   }
 
   @override
@@ -65,30 +75,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _emailCtrl,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'emaill',
+                        labelText: t.email,
                         prefixIcon: const Icon(Icons.email_outlined),
                       ),
                       validator: (v) => (v == null || !v.contains('@'))
-                          ? 'Invalid email'
+                          ? t.invalidEmail
                           : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _passwordCtrl,
                       obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'passwordd',
+                        labelText: t.password,
                         prefixIcon: const Icon(Icons.lock_outline),
                       ),
                       validator: (v) => (v == null || v.length < 3)
-                          ? 'Too short'
+                          ? t.passwordTooShort
                           : null,
                     ),
                     if (vm.error != null) ...[
                       const SizedBox(height: 12),
                       Text(
-                        vm.error!,
+                        vm.error == 'invalidCredentials'
+                            ? t.invalidCredentials
+                            : vm.error!,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.error,
                         ),
@@ -99,15 +114,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: vm.busy ? null : _submit,
                       child: vm.busy
                           ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                          : Text('loginnn'),
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(t.login),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Tip: use fore@test.com to log in as a forecaster',
+                      t.forecasterLoginTip(_forecasterDemoEmail),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),

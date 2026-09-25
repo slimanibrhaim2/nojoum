@@ -11,60 +11,53 @@ import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/localization/l10n/app_localizations.dart';
-import 'features/public/public_home_screen.dart';
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final AuthRepository authRepository = AuthRepositoryMock();
 
   runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_)=>LocaleProvider()),
-          ChangeNotifierProvider(create: (_)=>ThemeProvider()),
-          Provider<AuthRepository>.value(value: authRepository,),
-          ChangeNotifierProvider(create: (_)=>AuthViewModel(authRepository)..init(),
-          ),
-        ],
-        child: const MyApp(),
-      )
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        Provider<AuthRepository>.value(value: authRepository),
+        ChangeNotifierProvider(
+          create: (_) => AuthViewModel(authRepository)..init(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
-  class MyApp extends StatefulWidget {
-    const MyApp({super.key});
-  
-    @override
-    State<MyApp> createState() => _MyAppState();
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _router = AppRouter.create(context.read<AuthViewModel>());
   }
-  
-  class _MyAppState extends State<MyApp> {
 
-    late final GoRouter _router;
-
-      @override
-      void initState(){
-        super.initState();
-        _router= AppRouter.create(context);
-      }
-    @override
+  @override
   Widget build(BuildContext context) {
-    final localProvider =context.watch<LocaleProvider>();
-    final themeProvider= context.watch<ThemeProvider>();
+    final localProvider = context.watch<LocaleProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
-
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appName,
-
-      // ── Our theme ──
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeProvider.mode,
-
-      // ── Our localization ──
       locale: localProvider.locale,
       supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
@@ -73,9 +66,7 @@ void main() {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
-      home: const PublicHomeScreen(),
+      routerConfig: _router,
     );
   }
-
-  }
+}

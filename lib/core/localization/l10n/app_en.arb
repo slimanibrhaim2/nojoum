@@ -4,5 +4,22 @@
     "welcomeBack": "Welcome back",
     "signInToContinue": "Sign in to continue",
     "switchToArabic": "العربية",
-    "switchToEnglish": "English"
+    "switchToEnglish": "English",
+    "splashTagline": "Stars, palms, and the cup",
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "logout": "Log out",
+    "invalidEmail": "Enter a valid email",
+    "passwordTooShort": "Password is too short",
+    "invalidCredentials": "Invalid email or password",
+    "forecasterLoginTip": "Tip: use {email} to log in as a forecaster",
+    "@forecasterLoginTip": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboard": "Dashboard"
 }
