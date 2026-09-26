@@ -35,7 +35,7 @@ class User {
         email: json['email'] as String,
         fullName: json['fullName'] as String? ?? '', // for if we use a firebase it is not required
         role: UserRole.fromString(json['role'] as String),
-        imageUrl: json['imageUrl'] as String,
+        imageUrl: json['imageUrl'] as String?,
       );
 
   Map<String, dynamic> toJson() =>

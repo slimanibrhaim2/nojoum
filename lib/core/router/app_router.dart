@@ -4,8 +4,11 @@ import 'package:nojoum/core/router/route_guards.dart';
 import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
 
 import '../../features/auth/view/login_screen.dart';
+import '../../features/explore/view/explore_screen.dart';
 import '../../features/forecaster/view/forecaster_dashboard_screen.dart';
-import '../../features/public/public_home_screen.dart';
+import '../../features/public/view/public_home_screen.dart';
+import '../../features/settings/view/settings_screen.dart';
+import '../../features/shell/view/main_shell.dart';
 import '../../features/splash/view/splash_screen.dart';
 
 class AppRouter {
@@ -28,13 +31,26 @@ class AppRouter {
           path: AppRoutes.login,
           builder: (context, state) => const LoginScreen(),
         ),
-        GoRoute(
-          path: AppRoutes.publicHome,
-          builder: (context, state) => const PublicHomeScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.forecasterDashboard,
-          builder: (context, state) => const ForecasterDashboardScreen(),
+        ShellRoute(
+          builder: (context, state, child) => MainShell(child: child),
+          routes: [
+            GoRoute(
+              path: AppRoutes.publicHome,
+              builder: (context, state) => const PublicHomeScreen(),
+            ),
+            GoRoute(
+              path: AppRoutes.forecasterDashboard,
+              builder: (context, state) => const ForecasterDashboardScreen(),
+            ),
+            GoRoute(
+              path: AppRoutes.explore,
+              builder: (context, state) => const ExploreScreen(),
+            ),
+            GoRoute(
+              path: AppRoutes.settings,
+              builder: (context, state) => const SettingsScreen(),
+            ),
+          ],
         ),
       ],
     );

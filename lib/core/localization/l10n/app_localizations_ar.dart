@@ -55,4 +55,83 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboard => 'لوحة التحكم';
+
+  @override
+  String get navHome => 'الرئيسية';
+
+  @override
+  String get navExplore => 'استكشاف';
+
+  @override
+  String get navSettings => 'الإعدادات';
+
+  @override
+  String get comingSoon => 'قريباً';
+
+  @override
+  String get comingSoonMessage => 'هذه الصفحة جاهزة للميزة التالية.';
+
+  @override
+  String get homeEmptyTitle => 'توقعات اليوم';
+
+  @override
+  String get homeEmptyMessage => 'سيظهر هنا موجز التوقعات للعامة.';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get themeSystem => 'تلقائي';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String loggedInAs(String name) {
+    return 'مسجّل الدخول باسم $name';
+  }
+
+  @override
+  String get guestAccountHint => 'سجّل الدخول للإعجاب بالتوقعات وحجز الجلسات.';
+
+  @override
+  String get exploreMessage => 'تعرّف إلى منجّمي نجوم.';
+
+  @override
+  String get likes => 'إعجابات';
+
+  @override
+  String get reviews => 'التقييمات';
+
+  @override
+  String get rating => 'النجوم';
+
+  @override
+  String get totalPredictions => 'التوقعات';
+
+  @override
+  String get noBookings => 'لا حجوزات بعد. ستظهر هنا من لوحة /me.';
+
+  @override
+  String get typePalm => 'قراءة الكف';
+
+  @override
+  String get typeCoffee => 'الفنجان';
+
+  @override
+  String get typeAstrology => 'النجوم';
+
+  @override
+  String sessionMinutes(int minutes) {
+    return 'جلسة $minutes دقيقة';
+  }
 }

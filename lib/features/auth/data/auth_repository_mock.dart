@@ -1,3 +1,4 @@
+import '../../../core/mock/fake_ids.dart';
 import '../domain/user.dart';
 import 'auth_repository.dart';
 
@@ -11,18 +12,16 @@ class AuthRepositoryMock implements AuthRepository {
   }) async {
     await Future.delayed(const Duration(milliseconds: 700));
 
-    // Any password works except "wrong" — lets us test the error path.
     if (password == 'wrong') {
       throw Exception('invalidCredentials');
     }
 
-    // Role is decided by email: contains "fore" → forecaster.
     final isForecaster = email.toLowerCase().contains('fore');
 
     _current = User(
-      id: isForecaster ? 'f-001' : 'u-001',
+      id: isForecaster ? FakeIds.layla : FakeIds.publicUser,
       email: email,
-      fullName: isForecaster ? 'Test Forecaster' : 'Test Public User',
+      fullName: isForecaster ? 'ليلى النجمي' : 'سامي القارئ',
       role: isForecaster ? UserRole.forecaster : UserRole.publicUser,
     );
     return _current!;

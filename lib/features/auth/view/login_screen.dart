@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../shared/widgets/star_sky_background.dart';
 import '../viewmodel/auth_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,87 +48,98 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final vm = context.watch<AuthViewModel>();
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      t.appName,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
+    return NightScaffold(
+      title: t.login,
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(AppRoutes.publicHome);
+          }
+        },
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Icon(Icons.auto_awesome, size: 48, color: scheme.primary),
+                  const SizedBox(height: 12),
+                  Text(
+                    t.appName,
+                    style: text.headlineMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    t.signInToContinue,
+                    textAlign: TextAlign.center,
+                    style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: 32),
+                  TextFormField(
+                    controller: _emailCtrl,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: t.email,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      t.signInToContinue,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    validator: (v) => (v == null || !v.contains('@'))
+                        ? t.invalidEmail
+                        : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _passwordCtrl,
+                    obscureText: true,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _submit(),
+                    decoration: InputDecoration(
+                      labelText: t.password,
+                      prefixIcon: const Icon(Icons.lock_outline),
                     ),
-                    const SizedBox(height: 32),
-                    TextFormField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: t.email,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                      ),
-                      validator: (v) => (v == null || !v.contains('@'))
-                          ? t.invalidEmail
-                          : null,
-                    ),
+                    validator: (v) => (v == null || v.length < 3)
+                        ? t.passwordTooShort
+                        : null,
+                  ),
+                  if (vm.error != null) ...[
                     const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _passwordCtrl,
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) => _submit(),
-                      decoration: InputDecoration(
-                        labelText: t.password,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                      ),
-                      validator: (v) => (v == null || v.length < 3)
-                          ? t.passwordTooShort
-                          : null,
-                    ),
-                    if (vm.error != null) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        vm.error == 'invalidCredentials'
-                            ? t.invalidCredentials
-                            : vm.error!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: vm.busy ? null : _submit,
-                      child: vm.busy
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(t.login),
-                    ),
-                    const SizedBox(height: 16),
                     Text(
-                      t.forecasterLoginTip(_forecasterDemoEmail),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      vm.error == 'invalidCredentials'
+                          ? t.invalidCredentials
+                          : vm.error!,
+                      style: TextStyle(color: scheme.error),
                     ),
                   ],
-                ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: vm.busy ? null : _submit,
+                    child: vm.busy
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(t.login),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    t.forecasterLoginTip(_forecasterDemoEmail),
+                    textAlign: TextAlign.center,
+                    style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                ],
               ),
             ),
           ),

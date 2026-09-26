@@ -4,6 +4,14 @@ import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
 class RouteGuards {
   RouteGuards._();
 
+  static const _guestAllowed = {
+    AppRoutes.splash,
+    AppRoutes.login,
+    AppRoutes.publicHome,
+    AppRoutes.explore,
+    AppRoutes.settings,
+  };
+
   static String? redirect({
     required AuthViewModel auth,
     required String location,
@@ -14,15 +22,12 @@ class RouteGuards {
 
     final isLoggedIn = auth.isLoggedIn;
     final isForecaster = auth.isForecaster;
-    final isGuestAllowed = location == AppRoutes.login ||
-        location == AppRoutes.splash ||
-        location == AppRoutes.publicHome;
 
     if (!isLoggedIn && location == AppRoutes.splash) {
       return AppRoutes.publicHome;
     }
 
-    if (!isLoggedIn && !isGuestAllowed) {
+    if (!isLoggedIn && !_guestAllowed.contains(location)) {
       return AppRoutes.login;
     }
 
@@ -33,10 +38,9 @@ class RouteGuards {
           : AppRoutes.publicHome;
     }
 
-    if (isLoggedIn &&
-        !isForecaster &&
-        location == AppRoutes.forecasterDashboard) {
-      return AppRoutes.publicHome;
+    if (location == AppRoutes.forecasterDashboard &&
+        (!isLoggedIn || !isForecaster)) {
+      return isLoggedIn ? AppRoutes.publicHome : AppRoutes.login;
     }
 
     return null;

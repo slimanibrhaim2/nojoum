@@ -187,6 +187,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dashboard'**
   String get dashboard;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get navExplore;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @comingSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This page is ready for the next feature.'**
+  String get comingSoonMessage;
+
+  /// No description provided for @homeEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s predictions'**
+  String get homeEmptyTitle;
+
+  /// No description provided for @homeEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The public feed will live here.'**
+  String get homeEmptyMessage;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @loggedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {name}'**
+  String loggedInAs(String name);
+
+  /// No description provided for @guestAccountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in to like predictions and book sessions.'**
+  String get guestAccountHint;
+
+  /// No description provided for @exploreMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the forecasters of Nojoum.'**
+  String get exploreMessage;
+
+  /// No description provided for @likes.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get likes;
+
+  /// No description provided for @reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get reviews;
+
+  /// No description provided for @rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get rating;
+
+  /// No description provided for @totalPredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'Predictions'**
+  String get totalPredictions;
+
+  /// No description provided for @noBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings yet. They will appear here from /me.'**
+  String get noBookings;
+
+  /// No description provided for @typePalm.
+  ///
+  /// In en, this message translates to:
+  /// **'Palm'**
+  String get typePalm;
+
+  /// No description provided for @typeCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Coffee cup'**
+  String get typeCoffee;
+
+  /// No description provided for @typeAstrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Stars'**
+  String get typeAstrology;
+
+  /// No description provided for @sessionMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}-minute session'**
+  String sessionMinutes(int minutes);
 }
 
 class _AppLocalizationsDelegate

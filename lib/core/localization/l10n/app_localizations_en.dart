@@ -55,4 +55,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboard => 'Dashboard';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navExplore => 'Explore';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get comingSoonMessage => 'This page is ready for the next feature.';
+
+  @override
+  String get homeEmptyTitle => 'Today\'s predictions';
+
+  @override
+  String get homeEmptyMessage => 'The public feed will live here.';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String loggedInAs(String name) {
+    return 'Signed in as $name';
+  }
+
+  @override
+  String get guestAccountHint =>
+      'Log in to like predictions and book sessions.';
+
+  @override
+  String get exploreMessage => 'Meet the forecasters of Nojoum.';
+
+  @override
+  String get likes => 'Likes';
+
+  @override
+  String get reviews => 'Reviews';
+
+  @override
+  String get rating => 'Rating';
+
+  @override
+  String get totalPredictions => 'Predictions';
+
+  @override
+  String get noBookings => 'No bookings yet. They will appear here from /me.';
+
+  @override
+  String get typePalm => 'Palm';
+
+  @override
+  String get typeCoffee => 'Coffee cup';
+
+  @override
+  String get typeAstrology => 'Stars';
+
+  @override
+  String sessionMinutes(int minutes) {
+    return '$minutes-minute session';
+  }
 }

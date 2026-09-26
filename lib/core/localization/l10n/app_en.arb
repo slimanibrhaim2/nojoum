@@ -21,5 +21,44 @@
             }
         }
     },
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "navHome": "Home",
+    "navExplore": "Explore",
+    "navSettings": "Settings",
+    "comingSoon": "Coming soon",
+    "comingSoonMessage": "This page is ready for the next feature.",
+    "homeEmptyTitle": "Today's predictions",
+    "homeEmptyMessage": "The public feed will live here.",
+    "account": "Account",
+    "appearance": "Appearance",
+    "language": "Language",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "loggedInAs": "Signed in as {name}",
+    "@loggedInAs": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "guestAccountHint": "Log in to like predictions and book sessions.",
+    "exploreMessage": "Meet the forecasters of Nojoum.",
+    "likes": "Likes",
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "totalPredictions": "Predictions",
+    "noBookings": "No bookings yet. They will appear here from /me.",
+    "typePalm": "Palm",
+    "typeCoffee": "Coffee cup",
+    "typeAstrology": "Stars",
+    "sessionMinutes": "{minutes}-minute session",
+    "@sessionMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    }
 }

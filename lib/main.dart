@@ -7,6 +7,12 @@ import 'package:nojoum/core/theme/theme_provider.dart';
 import 'package:nojoum/features/auth/data/auth_repository.dart';
 import 'package:nojoum/features/auth/data/auth_repository_mock.dart';
 import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
+import 'package:nojoum/features/forecaster/data/forecaster_repository.dart';
+import 'package:nojoum/features/forecaster/data/forecaster_repository_mock.dart';
+import 'package:nojoum/features/forecaster/viewmodel/forecaster_viewmodels.dart';
+import 'package:nojoum/features/predictions/data/prediction_repository.dart';
+import 'package:nojoum/features/predictions/data/prediction_repository_mock.dart';
+import 'package:nojoum/features/predictions/viewmodel/predictions_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
@@ -15,6 +21,8 @@ import 'core/localization/l10n/app_localizations.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final AuthRepository authRepository = AuthRepositoryMock();
+  final PredictionRepository predictionRepository = PredictionRepositoryMock();
+  final ForecasterRepository forecasterRepository = ForecasterRepositoryMock();
 
   runApp(
     MultiProvider(
@@ -22,8 +30,22 @@ void main() {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         Provider<AuthRepository>.value(value: authRepository),
+        Provider<PredictionRepository>.value(value: predictionRepository),
+        Provider<ForecasterRepository>.value(value: forecasterRepository),
         ChangeNotifierProvider(
           create: (_) => AuthViewModel(authRepository)..init(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PredictionsViewModel(predictionRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExploreViewModel(forecasterRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DashboardViewModel(
+            forecasterRepository,
+            predictionRepository,
+          ),
         ),
       ],
       child: const MyApp(),
