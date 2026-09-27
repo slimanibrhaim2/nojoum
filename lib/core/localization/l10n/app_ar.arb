@@ -39,5 +39,6 @@
   "typePalm": "قراءة الكف",
   "typeCoffee": "الفنجان",
   "typeAstrology": "النجوم",
-  "sessionMinutes": "جلسة {minutes} دقيقة"
+  "sessionMinutes": "جلسة {minutes} دقيقة",
+  "navForecasters": "المنجمين"
 }

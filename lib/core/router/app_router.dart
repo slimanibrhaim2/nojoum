@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nojoum/core/router/app_routes.dart';
 import 'package:nojoum/core/router/route_guards.dart';
 import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
+import 'package:nojoum/features/forecaster/view/forecaster.dart';
 
 import '../../features/auth/view/login_screen.dart';
 import '../../features/explore/view/explore_screen.dart';
@@ -45,6 +46,10 @@ class AppRouter {
             GoRoute(
               path: AppRoutes.explore,
               builder: (context, state) => const ExploreScreen(),
+            ),
+            GoRoute(
+              path: AppRoutes.forecasters,
+              builder: (context, state) => const Forecaster(),
             ),
             GoRoute(
               path: AppRoutes.settings,

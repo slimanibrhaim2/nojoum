@@ -134,4 +134,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String sessionMinutes(int minutes) {
     return 'جلسة $minutes دقيقة';
   }
+
+  @override
+  String get navForecasters => 'المنجمين';
 }

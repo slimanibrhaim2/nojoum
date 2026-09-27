@@ -47,11 +47,18 @@ class MainShell extends StatelessWidget {
         label: t.navExplore,
       ),
       _Tab(
+        path: AppRoutes.forecasters,
+        icon: Icons.people,
+        selectedIcon: Icons.people_outline,
+        label: t.navForecasters,
+      ),
+      _Tab(
         path: AppRoutes.settings,
         icon: Icons.settings_outlined,
         selectedIcon: Icons.settings,
         label: t.navSettings,
       ),
+
     ];
   }
 

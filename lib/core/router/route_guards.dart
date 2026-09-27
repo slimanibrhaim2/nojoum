@@ -10,6 +10,7 @@ class RouteGuards {
     AppRoutes.publicHome,
     AppRoutes.explore,
     AppRoutes.settings,
+    AppRoutes.forecasters,
   };
 
   static String? redirect({

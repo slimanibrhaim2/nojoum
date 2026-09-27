@@ -135,4 +135,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String sessionMinutes(int minutes) {
     return '$minutes-minute session';
   }
+
+  @override
+  String get navForecasters => 'Forecasters';
 }

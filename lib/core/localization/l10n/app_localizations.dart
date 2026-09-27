@@ -337,6 +337,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{minutes}-minute session'**
   String sessionMinutes(int minutes);
+
+  /// No description provided for @navForecasters.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecasters'**
+  String get navForecasters;
 }
 
 class _AppLocalizationsDelegate

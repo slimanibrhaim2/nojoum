@@ -7,4 +7,5 @@ class AppRoutes {
   static const String forecasterDashboard = '/dashboard';
   static const String explore = '/explore';
   static const String settings = '/settings';
+  static const String forecasters= "/forecasters";
 }
