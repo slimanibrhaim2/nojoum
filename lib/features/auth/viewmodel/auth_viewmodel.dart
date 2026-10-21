@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/network/token_storage.dart';
 import '../data/auth_repository.dart';
 import '../domain/user.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
 class AuthViewModel extends ChangeNotifier {
-  AuthViewModel(this._repo);
+  AuthViewModel(this._repo, {TokenStorage? tokens}) {
+    tokens?.onCleared = _onSessionCleared;
+  }
 
   final AuthRepository _repo;
 
@@ -61,6 +64,13 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<void> logout() async {
     await _repo.logout();
+    _onSessionCleared();
+  }
+
+  void _onSessionCleared() {
+    if (_status == AuthStatus.unauthenticated && _currentUser == null) {
+      return;
+    }
     _currentUser = null;
     _status = AuthStatus.unauthenticated;
     notifyListeners();

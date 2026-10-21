@@ -49,9 +49,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidCredentials => 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
 
   @override
-  String forecasterLoginTip(String email) {
-    return 'للتجربة: استخدم $email للدخول كمنجّم';
-  }
+  String get forecasterLoginTip => 'سجّل الدخول بحساب المنجّم من الـ API.';
 
   @override
   String get dashboard => 'لوحة التحكم';

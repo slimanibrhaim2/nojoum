@@ -13,14 +13,7 @@
     "invalidEmail": "Enter a valid email",
     "passwordTooShort": "Password is too short",
     "invalidCredentials": "Invalid email or password",
-    "forecasterLoginTip": "Tip: use {email} to log in as a forecaster",
-    "@forecasterLoginTip": {
-        "placeholders": {
-            "email": {
-                "type": "String"
-            }
-        }
-    },
+    "forecasterLoginTip": "Use your forecaster account from the API.",
     "dashboard": "Dashboard",
     "navHome": "Home",
     "navExplore": "Explore",

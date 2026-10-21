@@ -179,8 +179,8 @@ abstract class AppLocalizations {
   /// No description provided for @forecasterLoginTip.
   ///
   /// In en, this message translates to:
-  /// **'Tip: use {email} to log in as a forecaster'**
-  String forecasterLoginTip(String email);
+  /// **'Use your forecaster account from the API.'**
+  String get forecasterLoginTip;
 
   /// No description provided for @dashboard.
   ///

@@ -13,7 +13,7 @@
   "invalidEmail": "أدخل بريداً إلكترونياً صالحاً",
   "passwordTooShort": "كلمة المرور قصيرة جداً",
   "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
-  "forecasterLoginTip": "للتجربة: استخدم {email} للدخول كمنجّم",
+  "forecasterLoginTip": "سجّل الدخول بحساب المنجّم من الـ API.",
   "dashboard": "لوحة التحكم",
   "navHome": "الرئيسية",
   "navExplore": "استكشاف",

@@ -1,17 +1,39 @@
-class AppConfig{
+import 'package:flutter/foundation.dart';
+
+class AppConfig {
   AppConfig._();
-  static const String baseUrl = 'http://localhost:5000';
-  /// Base URL for the API.
-  /// For Android emulator use http://10.0.2.2:PORT
-  /// For iOS simulator / web  use http://localhost:PORT
 
-  /// Prefix used to build full media URLs.
-  /// If backend returns "/uploads/foo.jpg", we prepend this.
-  static const String mediaBaseUrl = 'http://localhost:5000';
+  /// Set true to keep the local fake repositories.
+  static const bool useMockApi = false;
 
-  /// Default pagination size.
+  static const int apiPort = 5136;
+
+  /// Windows / macOS / web / iOS simulator.
+  static const String localhostUrl = 'http://localhost:$apiPort';
+
+  /// Android emulator loopback to the host machine.
+  static const String androidEmulatorUrl = 'http://10.0.2.2:$apiPort';
+
+  /// Your PC Wi-Fi IPv4. A real phone cannot use localhost.
+  /// Update this if `ipconfig` shows a new address.
+  /// Override at run time: `--dart-define=API_BASE_URL=http://192.168.x.x:5136`
+  static const String lanUrl = 'http://10.12.89.92:$apiPort';
+
   static const int defaultPageSize = 20;
-
-  /// Breakpoint for "large screen" (web/tablet) layout.
   static const double tabletBreakpoint = 600;
+
+  static String get baseUrl {
+    const fromEnv = String.fromEnvironment('API_BASE_URL');
+    if (fromEnv.isNotEmpty) return fromEnv;
+
+    if (kIsWeb) return localhostUrl;
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+      case TargetPlatform.iOS:
+        return lanUrl;
+      default:
+        return localhostUrl;
+    }
+  }
 }

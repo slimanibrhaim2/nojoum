@@ -2,15 +2,11 @@ enum UserRole{
   forecaster,
   publicUser;
 
-  static UserRole fromString(String? value){
-    switch(value){
-      case('forecaster'):
-        return UserRole.forecaster;
-      case('public'):
-        return UserRole.publicUser;
-      default:
-        return UserRole.publicUser;
-    }
+  static UserRole fromString(String? value) {
+    final normalized = value?.toLowerCase() ?? '';
+    if (normalized.contains('forecast')) return UserRole.forecaster;
+    if (normalized.contains('public')) return UserRole.publicUser;
+    return UserRole.publicUser;
   }
 }
 
@@ -20,6 +16,7 @@ class User {
   final String fullName;
   final UserRole role;
   final String? imageUrl;
+  final bool isOnboarded;
 
   const User({
     required this.id,
@@ -27,6 +24,7 @@ class User {
     required this.fullName,
     required this.role,
     this.imageUrl,
+    this.isOnboarded = true,
   });
 
   factory User.fromJson(Map<String, dynamic> json)=>

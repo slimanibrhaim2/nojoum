@@ -16,10 +16,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailCtrl = TextEditingController(text: 'user@test.com');
-  final _passwordCtrl = TextEditingController(text: '123456');
-
-  static const _forecasterDemoEmail = 'fore@test.com';
+  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
 
   @override
   void dispose() {
@@ -135,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    t.forecasterLoginTip(_forecasterDemoEmail),
+                    t.forecasterLoginTip,
                     textAlign: TextAlign.center,
                     style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                   ),

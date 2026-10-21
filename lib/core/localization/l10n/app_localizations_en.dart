@@ -49,9 +49,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidCredentials => 'Invalid email or password';
 
   @override
-  String forecasterLoginTip(String email) {
-    return 'Tip: use $email to log in as a forecaster';
-  }
+  String get forecasterLoginTip => 'Use your forecaster account from the API.';
 
   @override
   String get dashboard => 'Dashboard';

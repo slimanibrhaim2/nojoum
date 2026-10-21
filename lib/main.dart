@@ -4,10 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:nojoum/core/localization/l10n/locale_provider.dart';
 import 'package:nojoum/core/router/app_router.dart';
 import 'package:nojoum/core/theme/theme_provider.dart';
+import 'package:nojoum/core/config/app_config.dart';
+import 'package:nojoum/core/network/api_client.dart';
+import 'package:nojoum/core/network/token_storage.dart';
 import 'package:nojoum/features/auth/data/auth_repository.dart';
+import 'package:nojoum/features/auth/data/auth_repository_api.dart';
 import 'package:nojoum/features/auth/data/auth_repository_mock.dart';
 import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:nojoum/features/forecaster/data/forecaster_repository.dart';
+import 'package:nojoum/features/forecaster/data/forecaster_repository_api.dart';
 import 'package:nojoum/features/forecaster/data/forecaster_repository_mock.dart';
 import 'package:nojoum/features/forecaster/viewmodel/forecaster_viewmodels.dart';
 import 'package:nojoum/features/predictions/data/prediction_repository.dart';
@@ -20,9 +25,16 @@ import 'core/localization/l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final AuthRepository authRepository = AuthRepositoryMock();
+  final tokenStorage = TokenStorage();
+  final apiClient = ApiClient(tokenStorage);
+
+  final AuthRepository authRepository = AppConfig.useMockApi
+      ? AuthRepositoryMock()
+      : AuthRepositoryApi(apiClient, tokenStorage);
   final PredictionRepository predictionRepository = PredictionRepositoryMock();
-  final ForecasterRepository forecasterRepository = ForecasterRepositoryMock();
+  final ForecasterRepository forecasterRepository = AppConfig.useMockApi
+      ? ForecasterRepositoryMock()
+      : ForecasterRepositoryApi(apiClient);
 
   runApp(
     MultiProvider(
@@ -33,7 +45,10 @@ void main() {
         Provider<PredictionRepository>.value(value: predictionRepository),
         Provider<ForecasterRepository>.value(value: forecasterRepository),
         ChangeNotifierProvider(
-          create: (_) => AuthViewModel(authRepository)..init(),
+          create: (_) => AuthViewModel(
+            authRepository,
+            tokens: AppConfig.useMockApi ? null : tokenStorage,
+          )..init(),
         ),
         ChangeNotifierProvider(
           create: (_) => PredictionsViewModel(predictionRepository),
