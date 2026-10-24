@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/mock/fake_ids.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/remote_avatar.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../forecaster/domain/forecaster.dart';
 import '../../forecaster/viewmodel/forecaster_viewmodels.dart';
@@ -85,10 +87,9 @@ class _ForecasterCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
+              RemoteAvatar(
+                url: AppConfig.mediaUrl(profile.imagePath),
                 radius: 26,
-                backgroundColor: scheme.primaryContainer,
-                child: Icon(Icons.auto_awesome, color: scheme.onPrimaryContainer),
               ),
               const SizedBox(width: 12),
               Expanded(

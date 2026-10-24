@@ -22,15 +22,24 @@ class AppConfig {
   static const int defaultPageSize = 20;
   static const double tabletBreakpoint = 600;
 
+  /// Turns an API `imagePath` into a URL the phone can request.
+  /// Keep storing `/uploads/profiles/file.jpg` on the server — never a disk path.
   static String mediaUrl(String? path) {
-    if (path == null || path.isEmpty) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
+    if (path == null || path.trim().isEmpty) return '';
+    var normalized = path.trim().replaceAll('\\', '/');
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+      return normalized;
+    }
+    final uploadsAt = normalized.toLowerCase().indexOf('/uploads/');
+    if (uploadsAt >= 0) {
+      normalized = normalized.substring(uploadsAt);
+    } else if (!normalized.startsWith('/')) {
+      normalized = '/$normalized';
     }
     final origin = baseUrl.endsWith('/')
         ? baseUrl.substring(0, baseUrl.length - 1)
         : baseUrl;
-    return path.startsWith('/') ? '$origin$path' : '$origin/$path';
+    return '$origin$normalized';
   }
 
   static String get baseUrl {

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../core/localization/l10n/app_localizations.dart';
 import '../../../../core/mock/fake_ids.dart';
+import '../../../../shared/widgets/remote_avatar.dart';
 import '../../../forecaster/domain/forecaster_me_profile.dart';
 import '../../../forecaster/domain/forecaster_profile_update.dart';
 import '../../../forecaster/viewmodel/forecaster_viewmodels.dart';
@@ -591,12 +592,16 @@ class _AvatarEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    ImageProvider? photo;
-    if (localPath != null) {
-      photo = FileImage(File(localPath!));
-    } else if (networkUrl.isNotEmpty) {
-      photo = NetworkImage(networkUrl);
-    }
+    final photo = localPath != null
+        ? ClipOval(
+            child: Image.file(
+              File(localPath!),
+              width: 96,
+              height: 96,
+              fit: BoxFit.cover,
+            ),
+          )
+        : RemoteAvatar(url: networkUrl, radius: 48);
 
     return Column(
       children: [
@@ -605,18 +610,7 @@ class _AvatarEditor extends StatelessWidget {
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
-              CircleAvatar(
-                radius: 48,
-                backgroundColor: scheme.primaryContainer,
-                backgroundImage: photo,
-                child: photo == null
-                    ? Icon(
-                        Icons.auto_awesome,
-                        size: 42,
-                        color: scheme.onPrimaryContainer,
-                      )
-                    : null,
-              ),
+              photo,
               if (editing)
                 CircleAvatar(
                   radius: 14,
