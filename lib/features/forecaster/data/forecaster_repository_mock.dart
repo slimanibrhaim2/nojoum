@@ -1,5 +1,7 @@
 import '../../../core/mock/fake_ids.dart';
 import '../domain/forecaster.dart';
+import '../domain/forecaster_me_profile.dart';
+import '../domain/forecaster_profile_update.dart';
 import '../domain/money.dart';
 import 'forecaster_repository.dart';
 
@@ -63,6 +65,44 @@ class ForecasterRepositoryMock implements ForecasterRepository {
     return profiles.firstWhere(
       (profile) => profile.id == id,
       orElse: () => throw Exception('Forecaster not found'),
+    );
+  }
+
+  @override
+  Future<ForecasterMeProfile> getMe() async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    final profile = profiles.first;
+    return ForecasterMeProfile(
+      forecasterId: profile.id,
+      fullName: profile.name,
+      email: 'fore@test.com',
+      imagePath: profile.imagePath,
+      averageRate: profile.averageRate,
+      reviewCount: profile.reviewCount,
+      sessionPrice: profile.money.amount,
+      currency: profile.money.currency,
+      type: profile.type,
+      timeZoneId: 'UTC',
+      isOnboarded: true,
+      availabilitySettings: profile.availabilitySettings,
+    );
+  }
+
+  @override
+  Future<ForecasterMeProfile> updateMe(ForecasterProfileUpdate update) async {
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    final current = await getMe();
+    return current.copyWith(
+      fullName: update.fullName,
+      sessionPrice: update.sessionPrice,
+      currency: update.currency,
+      type: update.type,
+      timeZoneId: update.timeZoneId,
+      availabilitySettings: AvailabilitySettings(
+        sessionDurationInMinutes: update.sessionDurationInMinutes,
+        bufferMinutesBetweenSessions: update.bufferMinutesBetweenSessions,
+        minimumNoticeInMinutes: update.minimumNoticeInMinutes,
+      ),
     );
   }
 

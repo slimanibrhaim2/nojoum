@@ -13,11 +13,14 @@ class ApiClient {
       ..receiveTimeout = const Duration(seconds: 15)
       ..headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
       };
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          if (options.data is FormData) {
+            options.headers.remove(Headers.contentTypeHeader);
+            options.contentType = null;
+          }
           final skipAuth = options.uri.path.contains(ApiRoutes.login);
           final token = _tokens.token;
           if (!skipAuth && token != null && token.isNotEmpty) {
@@ -68,6 +71,10 @@ class ApiClient {
     return _send(() => _dio.put<dynamic>(path, data: data));
   }
 
+  Future<dynamic> putForm(String path, FormData data) async {
+    return _send(() => _dio.put<dynamic>(path, data: data));
+  }
+
   Future<dynamic> delete(String path) async {
     return _send(() => _dio.delete<dynamic>(path));
   }
@@ -95,23 +102,31 @@ class ApiClient {
 
   static String _messageFromDio(DioException error) {
     final data = error.response?.data;
-    if (data is Map && data['errorMessage'] is String) {
-      final message = data['errorMessage'] as String;
-      if (message.isNotEmpty) return message;
+    if (data is Map) {
+      final message = data['errorMessage'];
+      if (message is String && message.isNotEmpty) return message;
+      final title = data['title'];
+      if (title is String && title.isNotEmpty) return title;
+      final errors = data['errors'];
+      if (errors is Map && errors.isNotEmpty) {
+        final first = errors.values.first;
+        if (first is List && first.isNotEmpty) return first.first.toString();
+        return first.toString();
+      }
     }
-    if (error.type == DioExceptionType.connectionError) {
-    print ('error.message: ${error.message}');
-      return 'Could not reach the server 1 ';
+    if (data is String && data.isNotEmpty && data.length < 180) {
+      return data;
     }
-
-      else if  (error.type == DioExceptionType.connectionTimeout) {
-      print ('error.message: ${error.message}');
-      return 'Could not reach the server 2';
+    if (error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout) {
+      return 'Could not reach the server';
     }
     if (error.response?.statusCode == 400 ||
         error.response?.statusCode == 401) {
       return 'invalidCredentials';
     }
-    return error.message ?? 'Request failed';
+    final code = error.response?.statusCode;
+    if (code != null) return 'Server error ($code)';
+    return 'Request failed';
   }
 }

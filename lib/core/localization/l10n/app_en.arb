@@ -54,5 +54,38 @@
             }
         }
     },
-    "navForecasters": "Forecasters"
+    "navForecasters": "Forecasters",
+    "forecastingProfile": "Forecasting profile",
+    "timeZone": "Time zone",
+    "sessionPrice": "Session price",
+    "sessionDuration": "Session duration",
+    "bufferMinutes": "Buffer between sessions",
+    "minimumNotice": "Minimum notice",
+    "onboarded": "Onboarded",
+    "yes": "Yes",
+    "no": "No",
+    "minutesValue": "{minutes} min",
+    "@minutesValue": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
+    "fullName": "Full name",
+    "currency": "Currency",
+    "changePhoto": "Change photo",
+    "forecastingType": "Forecasting type",
+    "profileSaved": "Profile updated",
+    "forecastingTypeCode": "Type {value}",
+    "@forecastingTypeCode": {
+        "placeholders": {
+            "value": {
+                "type": "int"
+            }
+        }
+    }
 }

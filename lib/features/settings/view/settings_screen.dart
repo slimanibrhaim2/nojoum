@@ -9,9 +9,35 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
+import '../../forecaster/viewmodel/forecaster_viewmodels.dart';
+import 'widgets/forecaster_profile_editor.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _askedForProfile = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final auth = context.read<AuthViewModel>();
+    final me = context.read<ForecasterMeViewModel>();
+    if (auth.isForecaster && !_askedForProfile) {
+      _askedForProfile = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) me.load();
+      });
+    }
+    if (!auth.isForecaster && _askedForProfile) {
+      _askedForProfile = false;
+      me.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,48 +47,37 @@ class SettingsScreen extends StatelessWidget {
     final localeProvider = context.watch<LocaleProvider>();
     final themeProvider = context.watch<ThemeProvider>();
     final user = auth.currentUser;
+    final me = context.watch<ForecasterMeViewModel>();
 
     return NightScaffold(
       title: t.navSettings,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          _SectionTitle(t.account),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (auth.isLoggedIn) ...[
-                    Text(t.loggedInAs(user?.fullName ?? user?.email ?? '')),
-                    if (user != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        user.email,
-                        style: TextStyle(color: scheme.onSurfaceVariant),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      onPressed: () => context.read<AuthViewModel>().logout(),
-                      icon: const Icon(Icons.logout),
-                      label: Text(t.logout),
-                    ),
-                  ] else ...[
-                    Text(t.guestAccountHint),
-                    const SizedBox(height: 16),
-                    FilledButton.icon(
-                      onPressed: () => context.push(AppRoutes.login),
-                      icon: const Icon(Icons.login),
-                      label: Text(t.login),
-                    ),
-                  ],
-                ],
+          if (auth.isForecaster) ...[
+            if (me.loading && me.profile == null)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 48),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (me.error != null && me.profile == null)
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.error_outline, color: scheme.error),
+                  title: Text(me.error!),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => me.load(force: true),
+                  ),
+                ),
+              )
+            else if (me.profile != null)
+              ForecasterProfileEditor(
+                profile: me.profile!,
+                viewModel: me,
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 24),
+          ],
           _SectionTitle(t.language),
           Card(
             child: ListTile(
@@ -112,6 +127,48 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 28),
+          _SectionTitle(t.account),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (auth.isLoggedIn) ...[
+                    Text(
+                      t.loggedInAs(user?.fullName ?? user?.email ?? ''),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    if (user != null && user.email.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        user.email,
+                        style: TextStyle(color: scheme.onSurfaceVariant),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        context.read<ForecasterMeViewModel>().clear();
+                        context.read<AuthViewModel>().logout();
+                      },
+                      icon: const Icon(Icons.logout),
+                      label: Text(t.logout),
+                    ),
+                  ] else ...[
+                    Text(t.guestAccountHint),
+                    const SizedBox(height: 16),
+                    FilledButton.icon(
+                      onPressed: () => context.push(AppRoutes.login),
+                      icon: const Icon(Icons.login),
+                      label: Text(t.login),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -131,7 +188,8 @@ class _SectionTitle extends StatelessWidget {
         text,
         style: TextStyle(
           color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.2,
         ),
       ),
     );

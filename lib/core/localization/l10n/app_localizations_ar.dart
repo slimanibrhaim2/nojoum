@@ -135,4 +135,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navForecasters => 'المنجمين';
+
+  @override
+  String get forecastingProfile => 'ملف التنجيم';
+
+  @override
+  String get timeZone => 'المنطقة الزمنية';
+
+  @override
+  String get sessionPrice => 'سعر الجلسة';
+
+  @override
+  String get sessionDuration => 'مدة الجلسة';
+
+  @override
+  String get bufferMinutes => 'فاصل بين الجلسات';
+
+  @override
+  String get minimumNotice => 'حد أدنى للإشعار';
+
+  @override
+  String get onboarded => 'اكتمل الإعداد';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String minutesValue(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get fullName => 'الاسم الكامل';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get changePhoto => 'تغيير الصورة';
+
+  @override
+  String get forecastingType => 'نوع التنجيم';
+
+  @override
+  String get profileSaved => 'تم تحديث الملف';
+
+  @override
+  String forecastingTypeCode(int value) {
+    return 'النوع $value';
+  }
 }

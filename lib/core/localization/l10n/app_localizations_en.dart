@@ -136,4 +136,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navForecasters => 'Forecasters';
+
+  @override
+  String get forecastingProfile => 'Forecasting profile';
+
+  @override
+  String get timeZone => 'Time zone';
+
+  @override
+  String get sessionPrice => 'Session price';
+
+  @override
+  String get sessionDuration => 'Session duration';
+
+  @override
+  String get bufferMinutes => 'Buffer between sessions';
+
+  @override
+  String get minimumNotice => 'Minimum notice';
+
+  @override
+  String get onboarded => 'Onboarded';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String minutesValue(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get changePhoto => 'Change photo';
+
+  @override
+  String get forecastingType => 'Forecasting type';
+
+  @override
+  String get profileSaved => 'Profile updated';
+
+  @override
+  String forecastingTypeCode(int value) {
+    return 'Type $value';
+  }
 }

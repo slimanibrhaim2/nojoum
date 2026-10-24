@@ -15,4 +15,20 @@ class ForecastingType {
   static const palm = 1;
   static const coffeeCup = 2;
   static const astrology = 4;
+  static const flag8 = 8;
+  static const flag16 = 16;
+  static const flag32 = 32;
+  static const flag64 = 64;
+  static const flag128 = 128;
+
+  static const flags = [
+    palm,
+    coffeeCup,
+    astrology,
+    flag8,
+    flag16,
+    flag32,
+    flag64,
+    flag128,
+  ];
 }

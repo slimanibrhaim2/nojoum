@@ -1,8 +1,12 @@
+import 'package:dio/dio.dart';
+
 import '../../../core/config/app_config.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/router/api_routes.dart';
 import '../domain/forecaster.dart';
+import '../domain/forecaster_me_profile.dart';
+import '../domain/forecaster_profile_update.dart';
 import '../domain/money.dart';
 import 'forecaster_repository.dart';
 
@@ -31,6 +35,39 @@ class ForecasterRepositoryApi implements ForecasterRepository {
       throw const ApiException('Forecaster not found');
     }
     return _profileFromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<ForecasterMeProfile> getMe() async {
+    final value = await _api.get(ApiRoutes.me);
+    if (value is! Map) {
+      throw const ApiException('Profile was empty');
+    }
+    return ForecasterMeProfile.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<ForecasterMeProfile> updateMe(ForecasterProfileUpdate update) async {
+    final map = <String, dynamic>{
+      'FullName': update.fullName,
+      'SessionPrice': update.sessionPrice.toString(),
+      'Currency': update.currency,
+      'Type': update.type.toString(),
+      'SessionDurationInMinutes': update.sessionDurationInMinutes.toString(),
+      'BufferMinutesBetweenSessions':
+          update.bufferMinutesBetweenSessions.toString(),
+      'MinimumNoticeInMinutes': update.minimumNoticeInMinutes.toString(),
+      'TimeZoneId': update.timeZoneId,
+    };
+    if (update.imageFilePath != null && update.imageFilePath!.isNotEmpty) {
+      final name = update.imageFilePath!.split(RegExp(r'[\\/]')).last;
+      map['ImageFile'] = await MultipartFile.fromFile(
+        update.imageFilePath!,
+        filename: name,
+      );
+    }
+    await _api.putForm(ApiRoutes.me, FormData.fromMap(map));
+    return getMe();
   }
 
   @override

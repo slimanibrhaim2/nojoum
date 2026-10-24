@@ -343,6 +343,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forecasters'**
   String get navForecasters;
+
+  /// No description provided for @forecastingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecasting profile'**
+  String get forecastingProfile;
+
+  /// No description provided for @timeZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Time zone'**
+  String get timeZone;
+
+  /// No description provided for @sessionPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Session price'**
+  String get sessionPrice;
+
+  /// No description provided for @sessionDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Session duration'**
+  String get sessionDuration;
+
+  /// No description provided for @bufferMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Buffer between sessions'**
+  String get bufferMinutes;
+
+  /// No description provided for @minimumNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum notice'**
+  String get minimumNotice;
+
+  /// No description provided for @onboarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Onboarded'**
+  String get onboarded;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @minutesValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String minutesValue(int minutes);
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get changePhoto;
+
+  /// No description provided for @forecastingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecasting type'**
+  String get forecastingType;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get profileSaved;
+
+  /// No description provided for @forecastingTypeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {value}'**
+  String forecastingTypeCode(int value);
 }
 
 class _AppLocalizationsDelegate

@@ -57,6 +57,9 @@ void main() {
           create: (_) => ExploreViewModel(forecasterRepository),
         ),
         ChangeNotifierProvider(
+          create: (_) => ForecasterMeViewModel(forecasterRepository),
+        ),
+        ChangeNotifierProvider(
           create: (_) => DashboardViewModel(
             forecasterRepository,
             predictionRepository,

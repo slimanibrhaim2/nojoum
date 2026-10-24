@@ -51,7 +51,7 @@ class _StarSkyBackgroundState extends State<StarSkyBackground>
       Color(0xFFFFFDF8),
       Color(0xFFF5ECDF),
       Color(0xFFEFE1F2),
-    ];;
+    ];
 
     return AnimatedBuilder(
       animation: _controller,

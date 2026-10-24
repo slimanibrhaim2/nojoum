@@ -4,6 +4,8 @@ import '../../predictions/data/prediction_repository.dart';
 import '../../predictions/domain/prediction.dart';
 import '../data/forecaster_repository.dart';
 import '../domain/forecaster.dart';
+import '../domain/forecaster_me_profile.dart';
+import '../domain/forecaster_profile_update.dart';
 
 class ExploreViewModel extends ChangeNotifier {
   ExploreViewModel(this._repo);
@@ -31,6 +33,61 @@ class ExploreViewModel extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     }
+  }
+}
+
+class ForecasterMeViewModel extends ChangeNotifier {
+  ForecasterMeViewModel(this._repo);
+
+  final ForecasterRepository _repo;
+
+  ForecasterMeProfile? _profile;
+  bool _loading = false;
+  bool _saving = false;
+  String? _error;
+
+  ForecasterMeProfile? get profile => _profile;
+  bool get loading => _loading;
+  bool get saving => _saving;
+  String? get error => _error;
+
+  Future<void> load({bool force = false}) async {
+    if (!force && _profile != null) return;
+    _loading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      _profile = await _repo.getMe();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> save(ForecasterProfileUpdate update) async {
+    _saving = true;
+    _error = null;
+    notifyListeners();
+    try {
+      _profile = await _repo.updateMe(update);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _saving = false;
+      notifyListeners();
+    }
+  }
+
+  void clear() {
+    _profile = null;
+    _error = null;
+    _loading = false;
+    _saving = false;
+    notifyListeners();
   }
 }
 

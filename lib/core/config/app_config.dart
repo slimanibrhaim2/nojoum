@@ -22,6 +22,17 @@ class AppConfig {
   static const int defaultPageSize = 20;
   static const double tabletBreakpoint = 600;
 
+  static String mediaUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    final origin = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+    return path.startsWith('/') ? '$origin$path' : '$origin/$path';
+  }
+
   static String get baseUrl {
     const fromEnv = String.fromEnvironment('API_BASE_URL');
     if (fromEnv.isNotEmpty) return fromEnv;
