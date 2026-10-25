@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../core/localization/l10n/app_localizations.dart';
 import '../../../../core/mock/fake_ids.dart';
+import '../../../../shared/widgets/nojoum_toast.dart';
 import '../../../../shared/widgets/remote_avatar.dart';
 import '../../../forecaster/domain/forecaster_me_profile.dart';
 import '../../../forecaster/domain/forecaster_profile_update.dart';
@@ -138,12 +139,10 @@ class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
     );
     if (!mounted) return;
     if (ok) setState(() => _editing = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          ok ? t.profileSaved : (widget.viewModel.error ?? t.comingSoon),
-        ),
-      ),
+    NojoumToast.show(
+      context,
+      message: ok ? t.profileSaved : (widget.viewModel.error ?? t.comingSoon),
+      kind: ok ? NojoumToastKind.success : NojoumToastKind.error,
     );
   }
 

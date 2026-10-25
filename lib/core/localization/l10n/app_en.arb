@@ -80,6 +80,15 @@
     "changePhoto": "Change photo",
     "forecastingType": "Forecasting type",
     "profileSaved": "Profile updated",
+    "availability": "Availability",
+    "availabilityHint": "Choose the days and hours you can take sessions.",
+    "availabilitySaved": "Availability updated",
+    "noAvailability": "No weekly hours yet. Tap Edit to add them.",
+    "startTime": "From",
+    "endTime": "To",
+    "applyHours": "Use these hours on every selected day",
+    "hourLabel": "Hour",
+    "minuteLabel": "Minutes",
     "forecastingTypeCode": "Type {value}",
     "@forecastingTypeCode": {
         "placeholders": {

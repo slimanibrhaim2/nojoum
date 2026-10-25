@@ -194,6 +194,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSaved => 'Profile updated';
 
   @override
+  String get availability => 'Availability';
+
+  @override
+  String get availabilityHint =>
+      'Choose the days and hours you can take sessions.';
+
+  @override
+  String get availabilitySaved => 'Availability updated';
+
+  @override
+  String get noAvailability => 'No weekly hours yet. Tap Edit to add them.';
+
+  @override
+  String get startTime => 'From';
+
+  @override
+  String get endTime => 'To';
+
+  @override
+  String get applyHours => 'Use these hours on every selected day';
+
+  @override
+  String get hourLabel => 'Hour';
+
+  @override
+  String get minuteLabel => 'Minutes';
+
+  @override
   String forecastingTypeCode(int value) {
     return 'Type $value';
   }

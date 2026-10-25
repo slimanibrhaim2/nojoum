@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../predictions/data/prediction_repository.dart';
 import '../../predictions/domain/prediction.dart';
 import '../data/forecaster_repository.dart';
+import '../domain/availability.dart';
 import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
@@ -42,24 +43,36 @@ class ForecasterMeViewModel extends ChangeNotifier {
   final ForecasterRepository _repo;
 
   ForecasterMeProfile? _profile;
+  ForecasterAvailability? _availability;
   bool _loading = false;
   bool _saving = false;
+  bool _savingAvailability = false;
   String? _error;
+  String? _availabilityError;
 
   ForecasterMeProfile? get profile => _profile;
+  ForecasterAvailability? get availability => _availability;
   bool get loading => _loading;
   bool get saving => _saving;
+  bool get savingAvailability => _savingAvailability;
   String? get error => _error;
+  String? get availabilityError => _availabilityError;
 
   Future<void> load({bool force = false}) async {
     if (!force && _profile != null) return;
     _loading = true;
     _error = null;
+    _availabilityError = null;
     notifyListeners();
     try {
       _profile = await _repo.getMe();
     } catch (e) {
       _error = e.toString();
+    }
+    try {
+      _availability = await _repo.getAvailability();
+    } catch (e) {
+      _availabilityError = e.toString();
     } finally {
       _loading = false;
       notifyListeners();
@@ -82,11 +95,30 @@ class ForecasterMeViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> saveAvailability(ForecasterAvailability update) async {
+    _savingAvailability = true;
+    _availabilityError = null;
+    notifyListeners();
+    try {
+      _availability = await _repo.updateAvailability(update);
+      return true;
+    } catch (e) {
+      _availabilityError = e.toString();
+      return false;
+    } finally {
+      _savingAvailability = false;
+      notifyListeners();
+    }
+  }
+
   void clear() {
     _profile = null;
+    _availability = null;
     _error = null;
+    _availabilityError = null;
     _loading = false;
     _saving = false;
+    _savingAvailability = false;
     notifyListeners();
   }
 }

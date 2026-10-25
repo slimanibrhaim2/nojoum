@@ -193,6 +193,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileSaved => 'تم تحديث الملف';
 
   @override
+  String get availability => 'أوقات التوفر';
+
+  @override
+  String get availabilityHint =>
+      'اختر الأيام والساعات التي يمكنك استقبال الجلسات فيها.';
+
+  @override
+  String get availabilitySaved => 'تم تحديث أوقات التوفر';
+
+  @override
+  String get noAvailability =>
+      'لا توجد ساعات أسبوعية بعد. اضغط تعديل لإضافتها.';
+
+  @override
+  String get startTime => 'من';
+
+  @override
+  String get endTime => 'إلى';
+
+  @override
+  String get applyHours => 'استخدم هذه الساعات لكل يوم محدد';
+
+  @override
+  String get hourLabel => 'الساعة';
+
+  @override
+  String get minuteLabel => 'الدقائق';
+
+  @override
   String forecastingTypeCode(int value) {
     return 'النوع $value';
   }

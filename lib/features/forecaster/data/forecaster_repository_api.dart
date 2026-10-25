@@ -4,6 +4,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/router/api_routes.dart';
+import '../domain/availability.dart';
 import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
@@ -68,6 +69,29 @@ class ForecasterRepositoryApi implements ForecasterRepository {
     }
     await _api.putForm(ApiRoutes.me, FormData.fromMap(map));
     return getMe();
+  }
+
+  @override
+  Future<ForecasterAvailability> getAvailability() async {
+    final value = await _api.get(ApiRoutes.meAvailability);
+    if (value is! Map) {
+      throw const ApiException('Availability was empty');
+    }
+    return ForecasterAvailability.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<ForecasterAvailability> updateAvailability(
+    ForecasterAvailability update,
+  ) async {
+    final value = await _api.put(
+      ApiRoutes.meAvailability,
+      data: update.toUpdateJson(),
+    );
+    if (value is Map) {
+      return ForecasterAvailability.fromJson(Map<String, dynamic>.from(value));
+    }
+    return getAvailability();
   }
 
   @override

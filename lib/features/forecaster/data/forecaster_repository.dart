@@ -1,3 +1,4 @@
+import '../domain/availability.dart';
 import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
@@ -8,4 +9,8 @@ abstract class ForecasterRepository {
   Future<ForecasterDashboard> getMyDashboard(String forecasterId);
   Future<ForecasterMeProfile> getMe();
   Future<ForecasterMeProfile> updateMe(ForecasterProfileUpdate update);
+  Future<ForecasterAvailability> getAvailability();
+  Future<ForecasterAvailability> updateAvailability(
+    ForecasterAvailability update,
+  );
 }

@@ -59,5 +59,14 @@
   "currency": "العملة",
   "changePhoto": "تغيير الصورة",
   "forecastingType": "نوع التنجيم",
-  "profileSaved": "تم تحديث الملف"
+  "profileSaved": "تم تحديث الملف",
+  "availability": "أوقات التوفر",
+  "availabilityHint": "اختر الأيام والساعات التي يمكنك استقبال الجلسات فيها.",
+  "availabilitySaved": "تم تحديث أوقات التوفر",
+  "noAvailability": "لا توجد ساعات أسبوعية بعد. اضغط تعديل لإضافتها.",
+  "startTime": "من",
+  "endTime": "إلى",
+  "applyHours": "استخدم هذه الساعات لكل يوم محدد",
+  "hourLabel": "الساعة",
+  "minuteLabel": "الدقائق"
 }

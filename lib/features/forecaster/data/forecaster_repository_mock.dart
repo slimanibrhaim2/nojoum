@@ -1,4 +1,5 @@
 import '../../../core/mock/fake_ids.dart';
+import '../domain/availability.dart';
 import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
@@ -7,6 +8,19 @@ import 'forecaster_repository.dart';
 
 class ForecasterRepositoryMock implements ForecasterRepository {
   ForecasterRepositoryMock();
+
+  ForecasterAvailability _availability = ForecasterAvailability(
+    forecasterId: FakeIds.layla,
+    rules: [
+      for (final day in [0, 1, 2, 3, 4])
+        AvailabilityRule(
+          id: 'mock-day-$day',
+          dayOfWeek: day,
+          startTime: '10:00:00',
+          endTime: '17:00:00',
+        ),
+    ],
+  );
 
   static final profiles = <ForecasterPublicProfile>[
     ForecasterPublicProfile(
@@ -104,6 +118,25 @@ class ForecasterRepositoryMock implements ForecasterRepository {
         minimumNoticeInMinutes: update.minimumNoticeInMinutes,
       ),
     );
+  }
+
+  @override
+  Future<ForecasterAvailability> getAvailability() async {
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    return _availability;
+  }
+
+  @override
+  Future<ForecasterAvailability> updateAvailability(
+    ForecasterAvailability update,
+  ) async {
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    _availability = ForecasterAvailability(
+      forecasterId: _availability.forecasterId,
+      rules: update.rules,
+      overrides: update.overrides,
+    );
+    return _availability;
   }
 
   @override

@@ -5,6 +5,7 @@ class ApiRoutes {
 
   static const String login = '/api/v1/forecasters/login';
   static const String me = '/api/v1/forecasters/me';
+  static const String meAvailability = '/api/v1/forecasters/me/availability';
   static const String forecasters = '/api/v1/forecasters';
 
   static String forecaster(String id) => '$forecasters/$id';

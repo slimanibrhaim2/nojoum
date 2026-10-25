@@ -452,6 +452,60 @@ abstract class AppLocalizations {
   /// **'Profile updated'**
   String get profileSaved;
 
+  /// No description provided for @availability.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get availability;
+
+  /// No description provided for @availabilityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the days and hours you can take sessions.'**
+  String get availabilityHint;
+
+  /// No description provided for @availabilitySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability updated'**
+  String get availabilitySaved;
+
+  /// No description provided for @noAvailability.
+  ///
+  /// In en, this message translates to:
+  /// **'No weekly hours yet. Tap Edit to add them.'**
+  String get noAvailability;
+
+  /// No description provided for @startTime.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get startTime;
+
+  /// No description provided for @endTime.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get endTime;
+
+  /// No description provided for @applyHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Use these hours on every selected day'**
+  String get applyHours;
+
+  /// No description provided for @hourLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get hourLabel;
+
+  /// No description provided for @minuteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get minuteLabel;
+
   /// No description provided for @forecastingTypeCode.
   ///
   /// In en, this message translates to:

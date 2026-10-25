@@ -10,6 +10,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
 import '../../forecaster/viewmodel/forecaster_viewmodels.dart';
+import 'widgets/forecaster_availability_editor.dart';
 import 'widgets/forecaster_profile_editor.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -71,11 +72,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               )
-            else if (me.profile != null)
+            else if (me.profile != null) ...[
               ForecasterProfileEditor(
                 profile: me.profile!,
                 viewModel: me,
               ),
+              const SizedBox(height: 20),
+              _SectionTitle(t.availability),
+              if (me.availability != null)
+                ForecasterAvailabilityEditor(
+                  availability: me.availability!,
+                  viewModel: me,
+                )
+              else if (me.availabilityError != null)
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.error_outline, color: scheme.error),
+                    title: Text(me.availabilityError!),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () => me.load(force: true),
+                    ),
+                  ),
+                ),
+            ],
             const SizedBox(height: 24),
           ],
           _SectionTitle(t.language),
