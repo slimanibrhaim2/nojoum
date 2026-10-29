@@ -7,28 +7,36 @@ class FakeIds {
   static const publicUser = '44444444-4444-4444-8444-444444444444';
 }
 
-/// Bit flags from the API `ForecastingType` enum.
+/// Bit flags matching backend `Forcasting.Shared.ForecastingType`.
 class ForecastingType {
   ForecastingType._();
 
-  static const none = 0;
-  static const palm = 1;
-  static const coffeeCup = 2;
-  static const astrology = 4;
-  static const flag8 = 8;
-  static const flag16 = 16;
-  static const flag32 = 32;
-  static const flag64 = 64;
-  static const flag128 = 128;
+  static const notSpecified = 0;
+  static const westernAstrology = 1 << 0; // 1
+  static const vedicAstrology = 1 << 1; // 2
+  static const chineseAstrology = 1 << 2; // 4
+  static const tarotReading = 1 << 3; // 8
+  static const numerology = 1 << 4; // 16
+  static const palmistry = 1 << 5; // 32
+  static const mediumship = 1 << 6; // 64
+  static const clairvoyance = 1 << 7; // 128
+
+  /// Legacy aliases used by older UI code.
+  static const palm = palmistry;
+  static const coffeeCup = vedicAstrology;
+  static const astrology = westernAstrology;
 
   static const flags = [
-    palm,
-    coffeeCup,
-    astrology,
-    flag8,
-    flag16,
-    flag32,
-    flag64,
-    flag128,
+    westernAstrology,
+    vedicAstrology,
+    chineseAstrology,
+    tarotReading,
+    numerology,
+    palmistry,
+    mediumship,
+    clairvoyance,
   ];
+
+  static List<int> activeFlags(int type) =>
+      flags.where((flag) => type & flag != 0).toList();
 }

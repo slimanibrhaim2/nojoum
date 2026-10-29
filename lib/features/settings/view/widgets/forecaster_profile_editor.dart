@@ -199,12 +199,22 @@ class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
 
   String _typeLabel(AppLocalizations t, int value) {
     switch (value) {
-      case ForecastingType.palm:
+      case ForecastingType.westernAstrology:
+        return t.typeWesternAstrology;
+      case ForecastingType.vedicAstrology:
+        return t.typeVedicAstrology;
+      case ForecastingType.chineseAstrology:
+        return t.typeChineseAstrology;
+      case ForecastingType.tarotReading:
+        return t.typeTarot;
+      case ForecastingType.numerology:
+        return t.typeNumerology;
+      case ForecastingType.palmistry:
         return t.typePalm;
-      case ForecastingType.coffeeCup:
-        return t.typeCoffee;
-      case ForecastingType.astrology:
-        return t.typeAstrology;
+      case ForecastingType.mediumship:
+        return t.typeMediumship;
+      case ForecastingType.clairvoyance:
+        return t.typeClairvoyance;
       default:
         return t.forecastingTypeCode(value);
     }

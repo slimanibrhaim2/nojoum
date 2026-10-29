@@ -30,7 +30,7 @@ class ForecasterRepositoryMock implements ForecasterRepository {
       averageRate: 4.8,
       reviewCount: 126,
       money: const Money(amount: 25, currency: 'USD'),
-      type: ForecastingType.astrology | ForecastingType.palm,
+      type: ForecastingType.westernAstrology | ForecastingType.palmistry,
       availabilitySettings: const AvailabilitySettings(
         sessionDurationInMinutes: 45,
         bufferMinutesBetweenSessions: 15,
@@ -44,7 +44,7 @@ class ForecasterRepositoryMock implements ForecasterRepository {
       averageRate: 4.6,
       reviewCount: 89,
       money: const Money(amount: 18, currency: 'USD'),
-      type: ForecastingType.coffeeCup,
+      type: ForecastingType.vedicAstrology,
       availabilitySettings: const AvailabilitySettings(
         sessionDurationInMinutes: 30,
         bufferMinutesBetweenSessions: 10,
@@ -58,7 +58,7 @@ class ForecasterRepositoryMock implements ForecasterRepository {
       averageRate: 4.9,
       reviewCount: 204,
       money: const Money(amount: 30, currency: 'USD'),
-      type: ForecastingType.palm | ForecastingType.coffeeCup,
+      type: ForecastingType.palmistry | ForecastingType.numerology,
       availabilitySettings: const AvailabilitySettings(
         sessionDurationInMinutes: 60,
         bufferMinutesBetweenSessions: 20,

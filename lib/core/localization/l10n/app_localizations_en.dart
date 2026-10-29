@@ -121,13 +121,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noBookings => 'No bookings yet. They will appear here from /me.';
 
   @override
-  String get typePalm => 'Palm';
+  String get typePalm => 'Palmistry';
 
   @override
-  String get typeCoffee => 'Coffee cup';
+  String get typeCoffee => 'Vedic astrology';
 
   @override
-  String get typeAstrology => 'Stars';
+  String get typeAstrology => 'Western astrology';
+
+  @override
+  String get typeWesternAstrology => 'Western astrology';
+
+  @override
+  String get typeVedicAstrology => 'Vedic astrology';
+
+  @override
+  String get typeChineseAstrology => 'Chinese astrology';
+
+  @override
+  String get typeTarot => 'Tarot';
+
+  @override
+  String get typeNumerology => 'Numerology';
+
+  @override
+  String get typeMediumship => 'Mediumship';
+
+  @override
+  String get typeClairvoyance => 'Clairvoyance';
 
   @override
   String sessionMinutes(int minutes) {
@@ -241,4 +262,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String forecastingTypeCode(int value) {
     return 'Type $value';
   }
+
+  @override
+  String get predictionDetails => 'Prediction';
+
+  @override
+  String get aboutForecaster => 'About the forecaster';
+
+  @override
+  String get forecasterUnavailable =>
+      'Forecaster profile is unavailable right now.';
+
+  @override
+  String get myPredictions => 'My predictions';
+
+  @override
+  String get noMyPredictions => 'You have not published any predictions yet.';
 }

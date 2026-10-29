@@ -13,6 +13,7 @@ class PredictionCard extends StatefulWidget {
     this.onLike,
     this.onDislike,
     this.onShare,
+    this.onOpen,
     this.busy = false,
   });
 
@@ -20,6 +21,7 @@ class PredictionCard extends StatefulWidget {
   final VoidCallback? onLike;
   final VoidCallback? onDislike;
   final VoidCallback? onShare;
+  final VoidCallback? onOpen;
   final bool busy;
 
   @override
@@ -202,6 +204,7 @@ class _PredictionCardState extends State<PredictionCard>
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onTap: widget.onOpen,
                 onDoubleTap: widget.onLike == null || widget.busy
                     ? null
                     : () => _handleLike(fromDoubleTap: true),

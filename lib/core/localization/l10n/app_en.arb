@@ -43,9 +43,16 @@
     "rating": "Rating",
     "totalPredictions": "Predictions",
     "noBookings": "No bookings yet. They will appear here from /me.",
-    "typePalm": "Palm",
-    "typeCoffee": "Coffee cup",
-    "typeAstrology": "Stars",
+    "typePalm": "Palmistry",
+    "typeCoffee": "Vedic astrology",
+    "typeAstrology": "Western astrology",
+    "typeWesternAstrology": "Western astrology",
+    "typeVedicAstrology": "Vedic astrology",
+    "typeChineseAstrology": "Chinese astrology",
+    "typeTarot": "Tarot",
+    "typeNumerology": "Numerology",
+    "typeMediumship": "Mediumship",
+    "typeClairvoyance": "Clairvoyance",
     "sessionMinutes": "{minutes}-minute session",
     "@sessionMinutes": {
         "placeholders": {
@@ -101,5 +108,10 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "predictionDetails": "Prediction",
+    "aboutForecaster": "About the forecaster",
+    "forecasterUnavailable": "Forecaster profile is unavailable right now.",
+    "myPredictions": "My predictions",
+    "noMyPredictions": "You have not published any predictions yet."
 }

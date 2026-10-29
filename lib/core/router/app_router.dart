@@ -5,8 +5,8 @@ import 'package:nojoum/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:nojoum/features/forecaster/view/forecaster.dart';
 
 import '../../features/auth/view/login_screen.dart';
-import '../../features/explore/view/explore_screen.dart';
 import '../../features/forecaster/view/forecaster_dashboard_screen.dart';
+import '../../features/predictions/view/prediction_detail_screen.dart';
 import '../../features/public/view/public_home_screen.dart';
 import '../../features/settings/view/settings_screen.dart';
 import '../../features/shell/view/main_shell.dart';
@@ -32,6 +32,12 @@ class AppRouter {
           path: AppRoutes.login,
           builder: (context, state) => const LoginScreen(),
         ),
+        GoRoute(
+          path: '${AppRoutes.predictions}/:id',
+          builder: (context, state) => PredictionDetailScreen(
+            predictionId: state.pathParameters['id']!,
+          ),
+        ),
         ShellRoute(
           builder: (context, state, child) => MainShell(child: child),
           routes: [
@@ -42,10 +48,6 @@ class AppRouter {
             GoRoute(
               path: AppRoutes.forecasterDashboard,
               builder: (context, state) => const ForecasterDashboardScreen(),
-            ),
-            GoRoute(
-              path: AppRoutes.explore,
-              builder: (context, state) => const ExploreScreen(),
             ),
             GoRoute(
               path: AppRoutes.forecasters,

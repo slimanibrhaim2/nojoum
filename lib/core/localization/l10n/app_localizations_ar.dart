@@ -123,10 +123,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get typePalm => 'قراءة الكف';
 
   @override
-  String get typeCoffee => 'الفنجان';
+  String get typeCoffee => 'التنجيم الفيدي';
 
   @override
-  String get typeAstrology => 'النجوم';
+  String get typeAstrology => 'التنجيم الغربي';
+
+  @override
+  String get typeWesternAstrology => 'التنجيم الغربي';
+
+  @override
+  String get typeVedicAstrology => 'التنجيم الفيدي';
+
+  @override
+  String get typeChineseAstrology => 'التنجيم الصيني';
+
+  @override
+  String get typeTarot => 'التاروت';
+
+  @override
+  String get typeNumerology => 'علم الأرقام';
+
+  @override
+  String get typeMediumship => 'الوسطية الروحية';
+
+  @override
+  String get typeClairvoyance => 'الاستبصار';
 
   @override
   String sessionMinutes(int minutes) {
@@ -240,4 +261,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String forecastingTypeCode(int value) {
     return 'النوع $value';
   }
+
+  @override
+  String get predictionDetails => 'التوقع';
+
+  @override
+  String get aboutForecaster => 'عن المنجّم';
+
+  @override
+  String get forecasterUnavailable => 'ملف المنجّم غير متاح حالياً.';
+
+  @override
+  String get myPredictions => 'توقعاتي';
+
+  @override
+  String get noMyPredictions => 'لم تنشر أي توقعات بعد.';
 }

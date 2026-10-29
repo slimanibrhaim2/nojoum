@@ -8,10 +8,15 @@ class RouteGuards {
     AppRoutes.splash,
     AppRoutes.login,
     AppRoutes.publicHome,
-    AppRoutes.explore,
     AppRoutes.settings,
     AppRoutes.forecasters,
   };
+
+  static bool _isGuestAllowed(String location) {
+    if (_guestAllowed.contains(location)) return true;
+    if (location.startsWith('${AppRoutes.predictions}/')) return true;
+    return false;
+  }
 
   static String? redirect({
     required AuthViewModel auth,
@@ -28,7 +33,7 @@ class RouteGuards {
       return AppRoutes.publicHome;
     }
 
-    if (!isLoggedIn && !_guestAllowed.contains(location)) {
+    if (!isLoggedIn && !_isGuestAllowed(location)) {
       return AppRoutes.login;
     }
 

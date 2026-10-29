@@ -33,6 +33,12 @@ class MainShell extends StatelessWidget {
         selectedIcon: Icons.home,
         label: t.navHome,
       ),
+      _Tab(
+        path: AppRoutes.forecasters,
+        icon: Icons.people_outline,
+        selectedIcon: Icons.people,
+        label: t.navForecasters,
+      ),
       if (isForecaster)
         _Tab(
           path: AppRoutes.forecasterDashboard,
@@ -40,18 +46,6 @@ class MainShell extends StatelessWidget {
           selectedIcon: Icons.dashboard,
           label: t.dashboard,
         ),
-      _Tab(
-        path: AppRoutes.explore,
-        icon: Icons.explore_outlined,
-        selectedIcon: Icons.explore,
-        label: t.navExplore,
-      ),
-      _Tab(
-        path: AppRoutes.forecasters,
-        icon: Icons.people,
-        selectedIcon: Icons.people_outline,
-        label: t.navForecasters,
-      ),
       _Tab(
         path: AppRoutes.settings,
         icon: Icons.settings_outlined,

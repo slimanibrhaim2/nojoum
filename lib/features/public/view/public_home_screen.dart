@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -6,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/localization/l10n/locale_provider.dart';
+import '../../../core/router/app_routes.dart';
 import '../../../shared/widgets/nojoum_toast.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
@@ -155,6 +157,9 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
                 PredictionCard(
                   prediction: prediction,
                   busy: vm.isBusy(prediction.id),
+                  onOpen: () => context.push(
+                    AppRoutes.prediction(prediction.id),
+                  ),
                   onLike: () => _engage(
                     signedIn: signedIn,
                     action: () => vm.like(prediction.id),

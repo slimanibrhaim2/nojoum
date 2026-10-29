@@ -60,7 +60,10 @@ class PredictionRepositoryApi implements PredictionRepository {
 
   @override
   Future<Prediction> getById(String id, {required String languageCode}) async {
-    final value = await _api.get(ApiRoutes.prediction(id));
+    final value = await _api.get(
+      ApiRoutes.prediction(id),
+      queryParameters: {'languageCode': languageCode},
+    );
     if (value is! Map) {
       throw const ApiException('Prediction was empty');
     }

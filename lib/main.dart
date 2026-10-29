@@ -62,7 +62,7 @@ void main() {
           create: (_) => PredictionsViewModel(predictionRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => ExploreViewModel(forecasterRepository),
+          create: (_) => ForecastersViewModel(forecasterRepository),
         ),
         ChangeNotifierProvider(
           create: (_) => ForecasterMeViewModel(forecasterRepository),

@@ -22,15 +22,24 @@ class ForecasterPublicProfile {
   final AvailabilitySettings availabilitySettings;
 
   factory ForecasterPublicProfile.fromJson(Map<String, dynamic> json) {
+    final amount = (json['sessionPrice'] as num?)?.toDouble() ??
+        (json['money'] is Map
+            ? ((json['money'] as Map)['amount'] as num?)?.toDouble()
+            : null) ??
+        0;
+    final currency = json['currency'] as String? ??
+        (json['money'] is Map
+            ? (json['money'] as Map)['currency'] as String?
+            : null) ??
+        'USD';
+
     return ForecasterPublicProfile(
-      id: json['id'] as String,
-      name: json['name'] as String? ?? '',
+      id: (json['forecasterId'] ?? json['id'] ?? '').toString(),
+      name: ((json['fullName'] ?? json['name'] ?? '') as String).trim(),
       imagePath: json['imagePath'] as String?,
       averageRate: (json['averageRate'] as num?)?.toDouble() ?? 0,
       reviewCount: json['reviewCount'] as int? ?? 0,
-      money: Money.fromJson(
-        Map<String, dynamic>.from(json['money'] as Map? ?? const {}),
-      ),
+      money: Money(amount: amount, currency: currency),
       type: json['type'] as int? ?? 0,
       availabilitySettings: AvailabilitySettings.fromJson(
         Map<String, dynamic>.from(
@@ -64,9 +73,9 @@ class ForecasterDashboard {
 
   factory ForecasterDashboard.fromJson(Map<String, dynamic> json) {
     return ForecasterDashboard(
-      id: json['id'] as String,
+      id: (json['forecasterId'] ?? json['id'] ?? '').toString(),
       totalPredictions: json['totalPredictions'] as int? ?? 0,
-      averageRate: json['averageRate'] as int? ?? 0,
+      averageRate: (json['averageRate'] as num?)?.round() ?? 0,
       reviewCount: json['reviewCount'] as int? ?? 0,
       bookings: json['bookings'] as List<Object>? ?? const [],
       email: json['email'] as String?,

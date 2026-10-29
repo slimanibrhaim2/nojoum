@@ -8,8 +8,8 @@ import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
 
-class ExploreViewModel extends ChangeNotifier {
-  ExploreViewModel(this._repo);
+class ForecastersViewModel extends ChangeNotifier {
+  ForecastersViewModel(this._repo);
 
   final ForecasterRepository _repo;
 
@@ -140,6 +140,23 @@ class DashboardViewModel extends ChangeNotifier {
   List<Prediction> get myPredictions => _myPredictions;
   bool get loading => _loading;
   String? get error => _error;
+  final Set<String> _busyIds = {};
+
+  bool isBusy(String id) => _busyIds.contains(id);
+
+  Prediction? _find(String id) {
+    for (final item in _myPredictions) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
+  void _replace(Prediction updated) {
+    _myPredictions = [
+      for (final item in _myPredictions)
+        if (item.id == updated.id) updated else item,
+    ];
+  }
 
   Future<void> load({
     required String forecasterId,
@@ -171,6 +188,70 @@ class DashboardViewModel extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> like(String id) async {
+    final current = _find(id);
+    if (current == null || _busyIds.contains(id)) return;
+    _busyIds.add(id);
+    notifyListeners();
+    try {
+      final newLikeCount = await _predictions.like(id);
+      final nextLiked = !current.isLikedByCurrentUser;
+      final nextDislikeCount = current.isDislikedByCurrentUser
+          ? (current.dislikeCount > 0 ? current.dislikeCount - 1 : 0)
+          : current.dislikeCount;
+      _replace(
+        current.copyWith(
+          likeCount: newLikeCount,
+          dislikeCount: nextDislikeCount,
+          isLikedByCurrentUser: nextLiked,
+          isDislikedByCurrentUser: false,
+        ),
+      );
+    } finally {
+      _busyIds.remove(id);
+      notifyListeners();
+    }
+  }
+
+  Future<void> dislike(String id) async {
+    final current = _find(id);
+    if (current == null || _busyIds.contains(id)) return;
+    _busyIds.add(id);
+    notifyListeners();
+    try {
+      final newDislikeCount = await _predictions.dislike(id);
+      final nextDisliked = !current.isDislikedByCurrentUser;
+      final nextLikeCount = current.isLikedByCurrentUser
+          ? (current.likeCount > 0 ? current.likeCount - 1 : 0)
+          : current.likeCount;
+      _replace(
+        current.copyWith(
+          dislikeCount: newDislikeCount,
+          likeCount: nextLikeCount,
+          isDislikedByCurrentUser: nextDisliked,
+          isLikedByCurrentUser: false,
+        ),
+      );
+    } finally {
+      _busyIds.remove(id);
+      notifyListeners();
+    }
+  }
+
+  Future<void> recordShare(String id) async {
+    final current = _find(id);
+    if (current == null || _busyIds.contains(id)) return;
+    _busyIds.add(id);
+    notifyListeners();
+    try {
+      final newShareCount = await _predictions.share(id);
+      _replace(current.copyWith(sharingCount: newShareCount));
+    } finally {
+      _busyIds.remove(id);
       notifyListeners();
     }
   }

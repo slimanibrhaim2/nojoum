@@ -8,7 +8,6 @@ import '../domain/availability.dart';
 import '../domain/forecaster.dart';
 import '../domain/forecaster_me_profile.dart';
 import '../domain/forecaster_profile_update.dart';
-import '../domain/money.dart';
 import 'forecaster_repository.dart';
 
 class ForecasterRepositoryApi implements ForecasterRepository {
@@ -20,12 +19,18 @@ class ForecasterRepositoryApi implements ForecasterRepository {
   Future<List<ForecasterPublicProfile>> listPublicProfiles() async {
     final value = await _api.get(
       ApiRoutes.forecasters,
-      queryParameters: {'PageNumber': 1, 'PageSize': AppConfig.defaultPageSize},
+      queryParameters: {
+        'PageNumber': 1,
+        'PageSize': AppConfig.defaultPageSize,
+      },
     );
     final items = value is List ? value : const [];
     return items
         .whereType<Map>()
-        .map((item) => _profileFromJson(Map<String, dynamic>.from(item)))
+        .map(
+          (item) =>
+              ForecasterPublicProfile.fromJson(Map<String, dynamic>.from(item)),
+        )
         .toList();
   }
 
@@ -35,7 +40,7 @@ class ForecasterRepositoryApi implements ForecasterRepository {
     if (value is! Map) {
       throw const ApiException('Forecaster not found');
     }
-    return _profileFromJson(Map<String, dynamic>.from(value));
+    return ForecasterPublicProfile.fromJson(Map<String, dynamic>.from(value));
   }
 
   @override
@@ -112,28 +117,4 @@ class ForecasterRepositoryApi implements ForecasterRepository {
     );
   }
 
-  ForecasterPublicProfile _profileFromJson(Map<String, dynamic> json) {
-    final amount = (json['sessionPrice'] as num?)?.toDouble() ??
-        (json['money'] is Map
-            ? ((json['money'] as Map)['amount'] as num?)?.toDouble()
-            : null) ??
-        0;
-    final currency = json['currency'] as String? ??
-        (json['money'] is Map ? (json['money'] as Map)['currency'] as String? : null) ??
-        'USD';
-    return ForecasterPublicProfile(
-      id: (json['forecasterId'] ?? json['id']).toString(),
-      name: (json['fullName'] ?? json['name'] ?? '') as String,
-      imagePath: json['imagePath'] as String?,
-      averageRate: (json['averageRate'] as num?)?.toDouble() ?? 0,
-      reviewCount: json['reviewCount'] as int? ?? 0,
-      money: Money(amount: amount, currency: currency),
-      type: json['type'] as int? ?? 0,
-      availabilitySettings: AvailabilitySettings.fromJson(
-        Map<String, dynamic>.from(
-          json['availabilitySettings'] as Map? ?? const {},
-        ),
-      ),
-    );
-  }
 }

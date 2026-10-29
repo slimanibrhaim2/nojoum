@@ -317,20 +317,62 @@ abstract class AppLocalizations {
   /// No description provided for @typePalm.
   ///
   /// In en, this message translates to:
-  /// **'Palm'**
+  /// **'Palmistry'**
   String get typePalm;
 
   /// No description provided for @typeCoffee.
   ///
   /// In en, this message translates to:
-  /// **'Coffee cup'**
+  /// **'Vedic astrology'**
   String get typeCoffee;
 
   /// No description provided for @typeAstrology.
   ///
   /// In en, this message translates to:
-  /// **'Stars'**
+  /// **'Western astrology'**
   String get typeAstrology;
+
+  /// No description provided for @typeWesternAstrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Western astrology'**
+  String get typeWesternAstrology;
+
+  /// No description provided for @typeVedicAstrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Vedic astrology'**
+  String get typeVedicAstrology;
+
+  /// No description provided for @typeChineseAstrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese astrology'**
+  String get typeChineseAstrology;
+
+  /// No description provided for @typeTarot.
+  ///
+  /// In en, this message translates to:
+  /// **'Tarot'**
+  String get typeTarot;
+
+  /// No description provided for @typeNumerology.
+  ///
+  /// In en, this message translates to:
+  /// **'Numerology'**
+  String get typeNumerology;
+
+  /// No description provided for @typeMediumship.
+  ///
+  /// In en, this message translates to:
+  /// **'Mediumship'**
+  String get typeMediumship;
+
+  /// No description provided for @typeClairvoyance.
+  ///
+  /// In en, this message translates to:
+  /// **'Clairvoyance'**
+  String get typeClairvoyance;
 
   /// No description provided for @sessionMinutes.
   ///
@@ -541,6 +583,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type {value}'**
   String forecastingTypeCode(int value);
+
+  /// No description provided for @predictionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Prediction'**
+  String get predictionDetails;
+
+  /// No description provided for @aboutForecaster.
+  ///
+  /// In en, this message translates to:
+  /// **'About the forecaster'**
+  String get aboutForecaster;
+
+  /// No description provided for @forecasterUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecaster profile is unavailable right now.'**
+  String get forecasterUnavailable;
+
+  /// No description provided for @myPredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'My predictions'**
+  String get myPredictions;
+
+  /// No description provided for @noMyPredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not published any predictions yet.'**
+  String get noMyPredictions;
 }
 
 class _AppLocalizationsDelegate

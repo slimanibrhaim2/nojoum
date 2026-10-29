@@ -102,31 +102,23 @@ class ApiClient {
 
   static String _messageFromDio(DioException error) {
     final data = error.response?.data;
-    if (data is Map) {
-      final message = data['errorMessage'];
-      if (message is String && message.isNotEmpty) return message;
-      final title = data['title'];
-      if (title is String && title.isNotEmpty) return title;
-      final errors = data['errors'];
-      if (errors is Map && errors.isNotEmpty) {
-        final first = errors.values.first;
-        if (first is List && first.isNotEmpty) return first.first.toString();
-        return first.toString();
-      }
+    if (data is Map && data['errorMessage'] is String) {
+      final message = data['errorMessage'] as String;
+      if (message.isNotEmpty) return message;
     }
-    if (data is String && data.isNotEmpty && data.length < 180) {
-      return data;
+    if (error.type == DioExceptionType.connectionError) {
+    print ('error.message: ${error.message}');
+      return 'Could not reach the server 1 ';
     }
-    if (error.type == DioExceptionType.connectionError ||
-        error.type == DioExceptionType.connectionTimeout) {
-      return 'Could not reach the server';
+
+      else if  (error.type == DioExceptionType.connectionTimeout) {
+      print ('error.message: ${error.message}');
+      return 'Could not reach the server 2';
     }
     if (error.response?.statusCode == 400 ||
         error.response?.statusCode == 401) {
       return 'invalidCredentials';
     }
-    final code = error.response?.statusCode;
-    if (code != null) return 'Server error ($code)';
-    return 'Request failed';
+    return error.message ?? 'Request failed';
   }
 }
