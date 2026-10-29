@@ -17,6 +17,7 @@ import 'package:nojoum/features/forecaster/data/forecaster_repository_api.dart';
 import 'package:nojoum/features/forecaster/data/forecaster_repository_mock.dart';
 import 'package:nojoum/features/forecaster/viewmodel/forecaster_viewmodels.dart';
 import 'package:nojoum/features/predictions/data/prediction_repository.dart';
+import 'package:nojoum/features/predictions/data/prediction_repository_api.dart';
 import 'package:nojoum/features/predictions/data/prediction_repository_mock.dart';
 import 'package:nojoum/features/predictions/viewmodel/predictions_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,9 @@ void main() {
   final AuthRepository authRepository = AppConfig.useMockApi
       ? AuthRepositoryMock()
       : AuthRepositoryApi(apiClient, tokenStorage);
-  final PredictionRepository predictionRepository = PredictionRepositoryMock();
+  final PredictionRepository predictionRepository = AppConfig.useMockApi
+      ? PredictionRepositoryMock()
+      : PredictionRepositoryApi(apiClient);
   final ForecasterRepository forecasterRepository = AppConfig.useMockApi
       ? ForecasterRepositoryMock()
       : ForecasterRepositoryApi(apiClient);

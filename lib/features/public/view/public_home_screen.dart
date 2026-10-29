@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/localization/l10n/locale_provider.dart';
+import '../../../shared/widgets/nojoum_toast.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
 import '../../predictions/view/widgets/prediction_card.dart';
@@ -27,6 +28,31 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
     });
   }
 
+  Future<void> _engage({
+    required Future<void> Function() action,
+    required bool signedIn,
+  }) async {
+    final t = AppLocalizations.of(context);
+    if (!signedIn) {
+      NojoumToast.show(
+        context,
+        message: t.signInToContinue,
+        kind: NojoumToastKind.info,
+      );
+      return;
+    }
+    try {
+      await action();
+    } catch (e) {
+      if (!mounted) return;
+      NojoumToast.show(
+        context,
+        message: e.toString(),
+        kind: NojoumToastKind.error,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
@@ -35,6 +61,7 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
     final vm = context.watch<PredictionsViewModel>();
     final lang = context.watch<LocaleProvider>().locale.languageCode;
     _ensureLoaded(vm, lang);
+    final signedIn = user != null;
 
     return NightScaffold(
       title: t.appName,
@@ -73,7 +100,15 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
               for (final prediction in vm.items)
                 PredictionCard(
                   prediction: prediction,
-                  onLike: () => vm.like(prediction.id),
+                  busy: vm.isBusy(prediction.id),
+                  onLike: () => _engage(
+                    signedIn: signedIn,
+                    action: () => vm.like(prediction.id),
+                  ),
+                  onDislike: () => _engage(
+                    signedIn: signedIn,
+                    action: () => vm.dislike(prediction.id),
+                  ),
                 ),
           ],
         ),

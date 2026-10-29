@@ -21,7 +21,7 @@ class _Seed {
     required this.views,
     required this.likes,
     required this.shares,
-  });
+  }) : dislikes = 0;
 
   final String id;
   final String forecasterId;
@@ -32,6 +32,7 @@ class _Seed {
   final _Localized details;
   int views;
   int likes;
+  int dislikes;
   int shares;
 }
 
@@ -149,6 +150,8 @@ class PredictionRepositoryMock implements PredictionRepository {
         ];
 
   final List<_Seed> _items;
+  final Set<String> _likedIds = {};
+  final Set<String> _dislikedIds = {};
 
   Prediction _toPrediction(_Seed seed, String languageCode) {
     return Prediction(
@@ -161,8 +164,10 @@ class PredictionRepositoryMock implements PredictionRepository {
       details: seed.details.of(languageCode),
       viewCount: seed.views,
       likeCount: seed.likes,
-      dislikeCount: 0,
+      dislikeCount: seed.dislikes,
       sharingCount: seed.shares,
+      isLikedByCurrentUser: _likedIds.contains(seed.id),
+      isDislikedByCurrentUser: _dislikedIds.contains(seed.id),
     );
   }
 
@@ -198,9 +203,37 @@ class PredictionRepositoryMock implements PredictionRepository {
   }
 
   @override
-  Future<void> like(String id) async {
+  Future<int> like(String id) async {
     await Future<void>.delayed(const Duration(milliseconds: 120));
-    _find(id).likes += 1;
+    final seed = _find(id);
+    if (_dislikedIds.remove(id) && seed.dislikes > 0) {
+      seed.dislikes -= 1;
+    }
+    if (_likedIds.contains(id)) {
+      _likedIds.remove(id);
+      if (seed.likes > 0) seed.likes -= 1;
+    } else {
+      _likedIds.add(id);
+      seed.likes += 1;
+    }
+    return seed.likes;
+  }
+
+  @override
+  Future<int> dislike(String id) async {
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+    final seed = _find(id);
+    if (_likedIds.remove(id) && seed.likes > 0) {
+      seed.likes -= 1;
+    }
+    if (_dislikedIds.contains(id)) {
+      _dislikedIds.remove(id);
+      if (seed.dislikes > 0) seed.dislikes -= 1;
+    } else {
+      _dislikedIds.add(id);
+      seed.dislikes += 1;
+    }
+    return seed.dislikes;
   }
 
   @override

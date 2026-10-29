@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/remote_avatar.dart';
 import '../../domain/prediction.dart';
 
 class PredictionCard extends StatelessWidget {
@@ -9,12 +10,14 @@ class PredictionCard extends StatelessWidget {
     super.key,
     required this.prediction,
     this.onLike,
-    this.liked = false,
+    this.onDislike,
+    this.busy = false,
   });
 
   final Prediction prediction;
   final VoidCallback? onLike;
-  final bool liked;
+  final VoidCallback? onDislike;
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +136,9 @@ class PredictionCard extends StatelessWidget {
                     _Footer(
                       prediction: prediction,
                       scheme: scheme,
-                      liked: liked,
+                      busy: busy,
                       onLike: onLike,
+                      onDislike: onDislike,
                     ),
                   ],
                 ),
@@ -163,13 +167,14 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = prediction.forecasterName;
-    final initial = name.isEmpty ? '★' : name.characters.first;
+    final name = prediction.forecasterName.trim().isEmpty
+        ? '—'
+        : prediction.forecasterName;
+    final showRating = prediction.forecasterAverageRate > 0;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Gradient-ring avatar
         Container(
           width: 48,
           height: 48,
@@ -182,16 +187,9 @@ class _Header extends StatelessWidget {
             ),
           ),
           padding: const EdgeInsets.all(2),
-          child: CircleAvatar(
-            backgroundColor: scheme.surface,
-            child: Text(
-              initial,
-              style: TextStyle(
-                color: scheme.primary,
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-              ),
-            ),
+          child: RemoteAvatar(
+            url: prediction.forecasterImageUrl,
+            radius: 22,
           ),
         ),
         const SizedBox(width: 12),
@@ -212,11 +210,13 @@ class _Header extends StatelessWidget {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  _RatingChip(
-                    value: prediction.forecasterAverageRate,
-                    scheme: scheme,
-                  ),
-                  const SizedBox(width: 8),
+                  if (showRating) ...[
+                    _RatingChip(
+                      value: prediction.forecasterAverageRate,
+                      scheme: scheme,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   Flexible(
                     child: Text(
                       date,
@@ -275,89 +275,130 @@ class _RatingChip extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────
-// FOOTER — stats row
+// FOOTER — engagement row
 // ─────────────────────────────────────────────────────────────
 class _Footer extends StatelessWidget {
   const _Footer({
     required this.prediction,
     required this.scheme,
-    required this.liked,
+    required this.busy,
     required this.onLike,
+    required this.onDislike,
   });
 
   final Prediction prediction;
   final ColorScheme scheme;
-  final bool liked;
+  final bool busy;
   final VoidCallback? onLike;
+  final VoidCallback? onDislike;
 
   @override
   Widget build(BuildContext context) {
+    final liked = prediction.isLikedByCurrentUser;
+    final disliked = prediction.isDislikedByCurrentUser;
+
     return Row(
       children: [
-        _StatChip(
-          icon: Icons.visibility_outlined,
+        _EngageChip(
+          icon: Icons.visibility_rounded,
           value: '${prediction.viewCount}',
           scheme: scheme,
         ),
-        const SizedBox(width: 8),
-        _StatChip(
-          icon: liked ? Icons.favorite : Icons.favorite_border,
+        const SizedBox(width: 6),
+        _EngageChip(
+          icon: liked
+              ? Icons.thumb_up_alt_rounded
+              : Icons.thumb_up_off_alt_rounded,
           value: '${prediction.likeCount}',
           scheme: scheme,
-          highlight: liked,
-          onTap: onLike,
+          active: liked,
+          activeColor: scheme.primary,
+          onTap: busy ? null : onLike,
         ),
-        const SizedBox(width: 8),
-        _StatChip(
-          icon: Icons.ios_share,
+        const SizedBox(width: 6),
+        _EngageChip(
+          icon: disliked
+              ? Icons.thumb_down_alt_rounded
+              : Icons.thumb_down_off_alt_rounded,
+          value: '${prediction.dislikeCount}',
+          scheme: scheme,
+          active: disliked,
+          activeColor: scheme.error,
+          onTap: busy ? null : onDislike,
+        ),
+        const SizedBox(width: 6),
+        _EngageChip(
+          icon: Icons.ios_share_rounded,
           value: '${prediction.sharingCount}',
           scheme: scheme,
         ),
+        if (busy) ...[
+          const Spacer(),
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 1.8,
+              color: scheme.primary,
+            ),
+          ),
+        ],
       ],
     );
   }
 }
 
-class _StatChip extends StatelessWidget {
-  const _StatChip({
+class _EngageChip extends StatelessWidget {
+  const _EngageChip({
     required this.icon,
     required this.value,
     required this.scheme,
-    this.highlight = false,
+    this.active = false,
+    this.activeColor,
     this.onTap,
   });
 
   final IconData icon;
   final String value;
   final ColorScheme scheme;
-  final bool highlight;
+  final bool active;
+  final Color? activeColor;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final bg = highlight
-        ? scheme.secondary.withValues(alpha: 0.18)
-        : scheme.surfaceContainerHighest.withValues(alpha: 0.5);
-    final fg = highlight ? scheme.secondary : scheme.onSurfaceVariant;
-    final iconColor = highlight ? scheme.secondary : scheme.accent;
+    final accent = activeColor ?? scheme.secondary;
+    final bg = active
+        ? accent.withValues(alpha: 0.16)
+        : scheme.surfaceContainerHighest.withValues(alpha: 0.45);
+    final fg = active ? accent : scheme.onSurfaceVariant;
+    final iconColor = active ? accent : scheme.accent;
 
-    final chip = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    final chip = AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: active
+              ? accent.withValues(alpha: 0.35)
+              : scheme.outlineVariant.withValues(alpha: 0.35),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 15, color: iconColor),
+          Icon(icon, size: 16, color: iconColor),
           const SizedBox(width: 5),
           Text(
             value,
             style: TextStyle(
               color: fg,
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.1,
             ),
           ),
         ],
@@ -365,10 +406,13 @@ class _StatChip extends StatelessWidget {
     );
 
     if (onTap == null) return chip;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: chip,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: chip,
+      ),
     );
   }
 }
