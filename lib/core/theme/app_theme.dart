@@ -99,4 +99,14 @@ extension AppColorSchemeX on ColorScheme {
 
   Color get accent =>
       brightness == Brightness.dark ? AppTheme.cream : const Color(0xFF8A6A12);
+
+  /// Soft rose — readable on light cream and dark purple surfaces.
+  Color get reactionLike => brightness == Brightness.dark
+      ? const Color(0xFFFF8FB8)
+      : const Color(0xFFD9487D);
+
+  /// Warm amber — clearly different from like in both modes.
+  Color get reactionDislike => brightness == Brightness.dark
+      ? const Color(0xFFFFB454)
+      : const Color(0xFFC47A12);
 }
