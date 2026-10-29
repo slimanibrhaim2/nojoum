@@ -91,7 +91,7 @@ class PredictionRepositoryApi implements PredictionRepository {
   }
 
   @override
-  Future<void> share(String id) async {
-    await _api.post(ApiRoutes.predictionShare(id));
+  Future<int> share(String id) async {
+    return _newCount(await _api.post(ApiRoutes.predictionShare(id)));
   }
 }

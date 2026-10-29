@@ -1,3 +1,5 @@
+import '../../../core/zodiac/zodiac_sign.dart';
+
 class Prediction {
   const Prediction({
     required this.id,
@@ -9,7 +11,7 @@ class Prediction {
     required this.summary,
     this.details,
     this.resolvedMediaUrl,
-    this.zodiacSign = 0,
+    this.zodiacSign = ZodiacSign.aries,
     required this.viewCount,
     required this.likeCount,
     required this.dislikeCount,
@@ -27,7 +29,7 @@ class Prediction {
   final String summary;
   final String? details;
   final String? resolvedMediaUrl;
-  final int zodiacSign;
+  final ZodiacSign zodiacSign;
   final int viewCount;
   final int likeCount;
   final int dislikeCount;
@@ -67,12 +69,12 @@ class Prediction {
       forecasterId: (json['forecasterId'] ?? '').toString(),
       forecasterName: (json['forecasterName'] as String?)?.trim() ?? '',
       forecasterImageUrl: json['forecasterImagePath'] as String?,
-      forecasterAverageRate: (json['forecasterAverageRate'] as num?)?.toDouble() ??
-          0,
+      forecasterAverageRate:
+          (json['forecasterAverageRate'] as num?)?.toDouble() ?? 0,
       date: date,
       summary: picked?['summary'] as String? ?? '',
       details: picked?['details'] as String?,
-      zodiacSign: json['zodiacSign'] as int? ?? 0,
+      zodiacSign: ZodiacSign.from(json['zodiacSign']),
       viewCount: json['viewCount'] as int? ?? 0,
       likeCount: json['likeCount'] as int? ?? 0,
       dislikeCount: json['dislikeCount'] as int? ?? 0,

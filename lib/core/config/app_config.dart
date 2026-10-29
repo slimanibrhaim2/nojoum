@@ -22,6 +22,12 @@ class AppConfig {
   static const int defaultPageSize = 20;
   static const double tabletBreakpoint = 600;
 
+  /// Public web base used in share links.
+  static const String webSiteUrl = 'https://nojoum.com';
+
+  static String predictionShareUrl(String id) =>
+      '$webSiteUrl/predictions/$id';
+
   /// Turns an API `imagePath` into a URL the phone can request.
   /// Keep storing `/uploads/profiles/file.jpg` on the server — never a disk path.
   static String mediaUrl(String? path) {

@@ -115,4 +115,20 @@ class PredictionsViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Records a completed share with the backend and updates the count.
+  Future<void> recordShare(String id) async {
+    final current = _find(id);
+    if (current == null || _busyIds.contains(id)) return;
+
+    _busyIds.add(id);
+    notifyListeners();
+    try {
+      final newShareCount = await _repo.share(id);
+      _replace(current.copyWith(sharingCount: newShareCount));
+    } finally {
+      _busyIds.remove(id);
+      notifyListeners();
+    }
+  }
 }

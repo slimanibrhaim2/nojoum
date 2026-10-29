@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'app_bar_theme_toggle.dart';
+
 class StarSkyBackground extends StatefulWidget {
   const StarSkyBackground({
     super.key,
@@ -166,12 +168,14 @@ class NightScaffold extends StatelessWidget {
     required this.body,
     this.actions,
     this.leading,
+    this.showThemeToggle = true,
   });
 
   final String title;
   final Widget body;
   final List<Widget>? actions;
   final Widget? leading;
+  final bool showThemeToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +193,10 @@ class NightScaffold extends StatelessWidget {
               automaticallyImplyLeading: leading != null,
               title: Text(title),
               leading: leading,
-              actions: actions,
+              actions: [
+                ...?actions,
+                if (showThemeToggle) const AppBarThemeToggle(),
+              ],
             ),
             Expanded(child: body),
           ],

@@ -11,20 +11,23 @@ class PredictionCard extends StatelessWidget {
     required this.prediction,
     this.onLike,
     this.onDislike,
+    this.onShare,
     this.busy = false,
   });
 
   final Prediction prediction;
   final VoidCallback? onLike;
   final VoidCallback? onDislike;
+  final VoidCallback? onShare;
   final bool busy;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final locale = Localizations.localeOf(context).toString();
-    final date = DateFormat.yMMMd(locale).format(prediction.date);
+    final locale = Localizations.localeOf(context);
+    final date = DateFormat.yMMMd(locale.toString()).format(prediction.date);
+    final zodiac = prediction.zodiacSign.display(locale.languageCode);
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
@@ -104,6 +107,7 @@ class PredictionCard extends StatelessWidget {
                     _Header(
                       prediction: prediction,
                       date: date,
+                      zodiac: zodiac,
                       scheme: scheme,
                     ),
                     const SizedBox(height: 14),
@@ -139,6 +143,7 @@ class PredictionCard extends StatelessWidget {
                       busy: busy,
                       onLike: onLike,
                       onDislike: onDislike,
+                      onShare: onShare,
                     ),
                   ],
                 ),
@@ -158,11 +163,13 @@ class _Header extends StatelessWidget {
   const _Header({
     required this.prediction,
     required this.date,
+    required this.zodiac,
     required this.scheme,
   });
 
   final Prediction prediction;
   final String date;
+  final String zodiac;
   final ColorScheme scheme;
 
   @override
@@ -208,24 +215,22 @@ class _Header extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  if (showRating) ...[
+                  _ZodiacChip(label: zodiac, scheme: scheme),
+                  if (showRating)
                     _RatingChip(
                       value: prediction.forecasterAverageRate,
                       scheme: scheme,
                     ),
-                    const SizedBox(width: 8),
-                  ],
-                  Flexible(
-                    child: Text(
-                      date,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: scheme.onSurfaceVariant,
-                        fontSize: 12,
-                      ),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -234,6 +239,35 @@ class _Header extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ZodiacChip extends StatelessWidget {
+  const _ZodiacChip({required this.label, required this.scheme});
+
+  final String label;
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: scheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: scheme.primary.withValues(alpha: 0.28),
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: scheme.primary,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
@@ -284,6 +318,7 @@ class _Footer extends StatelessWidget {
     required this.busy,
     required this.onLike,
     required this.onDislike,
+    required this.onShare,
   });
 
   final Prediction prediction;
@@ -291,6 +326,7 @@ class _Footer extends StatelessWidget {
   final bool busy;
   final VoidCallback? onLike;
   final VoidCallback? onDislike;
+  final VoidCallback? onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -331,6 +367,7 @@ class _Footer extends StatelessWidget {
           icon: Icons.ios_share_rounded,
           value: '${prediction.sharingCount}',
           scheme: scheme,
+          onTap: busy ? null : onShare,
         ),
         if (busy) ...[
           const Spacer(),

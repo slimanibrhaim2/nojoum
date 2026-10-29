@@ -243,8 +243,10 @@ class PredictionRepositoryMock implements PredictionRepository {
   }
 
   @override
-  Future<void> share(String id) async {
+  Future<int> share(String id) async {
     await Future<void>.delayed(const Duration(milliseconds: 120));
-    _find(id).shares += 1;
+    final seed = _find(id);
+    seed.shares += 1;
+    return seed.shares;
   }
 }

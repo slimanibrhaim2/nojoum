@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/localization/l10n/locale_provider.dart';
 import '../../../shared/widgets/nojoum_toast.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
+import '../../predictions/domain/prediction.dart';
 import '../../predictions/view/widgets/prediction_card.dart';
 import '../../predictions/viewmodel/predictions_viewmodel.dart';
 
@@ -43,6 +47,56 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
     }
     try {
       await action();
+    } catch (e) {
+      if (!mounted) return;
+      NojoumToast.show(
+        context,
+        message: e.toString(),
+        kind: NojoumToastKind.error,
+      );
+    }
+  }
+
+  Future<void> _sharePrediction(
+    PredictionsViewModel vm,
+    Prediction prediction,
+  ) async {
+    final box = context.findRenderObject() as RenderBox?;
+    final locale = Localizations.localeOf(context);
+    final name = prediction.forecasterName.trim().isEmpty
+        ? 'Nojoum'
+        : prediction.forecasterName.trim();
+    final date = DateFormat.yMMMd(locale.toString()).format(prediction.date);
+    final zodiac = prediction.zodiacSign.display(locale.languageCode);
+    final link = AppConfig.predictionShareUrl(prediction.id);
+    final buffer = StringBuffer()
+      ..writeln(prediction.summary)
+      ..writeln()
+      ..writeln(prediction.details ?? '')
+      ..writeln()
+      ..writeln(zodiac)
+      ..writeln(date)
+      ..writeln('— $name')
+      ..writeln()
+      ..write(link);
+
+    try {
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          text: buffer.toString().trim(),
+          subject: prediction.summary,
+          title: 'Nojoum',
+          sharePositionOrigin: box == null
+              ? null
+              : box.localToGlobal(Offset.zero) & box.size,
+        ),
+      );
+
+      // Count when the user picked an app, or when the OS cannot report
+      // the outcome (still opened the system share sheet).
+      if (result.status == ShareResultStatus.dismissed) return;
+
+      await vm.recordShare(prediction.id);
     } catch (e) {
       if (!mounted) return;
       NojoumToast.show(
@@ -109,6 +163,7 @@ class _PublicHomeScreenState extends State<PublicHomeScreen> {
                     signedIn: signedIn,
                     action: () => vm.dislike(prediction.id),
                   ),
+                  onShare: () => _sharePrediction(vm, prediction),
                 ),
           ],
         ),

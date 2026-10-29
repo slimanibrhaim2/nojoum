@@ -17,5 +17,7 @@ abstract class PredictionRepository {
   Future<int> dislike(String id);
 
   Future<void> view(String id);
-  Future<void> share(String id);
+
+  /// Increments share count. Returns the updated sharing count.
+  Future<int> share(String id);
 }
