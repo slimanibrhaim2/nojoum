@@ -52,6 +52,7 @@ dependencies:
   # Utilities
   intl: 0.20.3
   image_picker: ^1.1.2
+  animated_theme_switcher: ^2.0.10
 
 
 

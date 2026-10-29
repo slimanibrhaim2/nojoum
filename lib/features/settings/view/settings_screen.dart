@@ -6,7 +6,7 @@ import '../../../core/localization/l10n/app_localizations.dart';
 import '../../../core/localization/l10n/locale_provider.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/theme_provider.dart';
+import '../../../shared/widgets/animated_theme_switch.dart';
 import '../../../shared/widgets/star_sky_background.dart';
 import '../../auth/viewmodel/auth_viewmodel.dart';
 import '../../forecaster/viewmodel/forecaster_viewmodels.dart';
@@ -46,7 +46,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final scheme = Theme.of(context).colorScheme;
     final auth = context.watch<AuthViewModel>();
     final localeProvider = context.watch<LocaleProvider>();
-    final themeProvider = context.watch<ThemeProvider>();
     final user = auth.currentUser;
     final me = context.watch<ForecasterMeViewModel>();
 
@@ -114,38 +113,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 20),
           _SectionTitle(t.appearance),
-          Card(
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.brightness_auto, color: scheme.accent),
-                  title: Text(t.themeSystem),
-                  selected: themeProvider.isSystem,
-                  trailing: themeProvider.isSystem
-                      ? Icon(Icons.check, color: scheme.primary)
-                      : null,
-                  onTap: themeProvider.setSystem,
-                ),
-                ListTile(
-                  leading: Icon(Icons.light_mode, color: scheme.accent),
-                  title: Text(t.themeLight),
-                  selected: themeProvider.isLight,
-                  trailing: themeProvider.isLight
-                      ? Icon(Icons.check, color: scheme.primary)
-                      : null,
-                  onTap: themeProvider.setLight,
-                ),
-                ListTile(
-                  leading: Icon(Icons.dark_mode, color: scheme.accent),
-                  title: Text(t.themeDark),
-                  selected: themeProvider.isDark,
-                  trailing: themeProvider.isDark
-                      ? Icon(Icons.check, color: scheme.primary)
-                      : null,
-                  onTap: themeProvider.setDark,
-                ),
-              ],
-            ),
+          const Card(
+            child: AnimatedThemeSwitch(),
           ),
           const SizedBox(height: 28),
           _SectionTitle(t.account),

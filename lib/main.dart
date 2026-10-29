@@ -1,9 +1,10 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nojoum/core/localization/l10n/locale_provider.dart';
 import 'package:nojoum/core/router/app_router.dart';
-import 'package:nojoum/core/theme/theme_provider.dart';
+import 'package:nojoum/core/theme/theme_provider.dart' as app_theme;
 import 'package:nojoum/core/config/app_config.dart';
 import 'package:nojoum/core/network/api_client.dart';
 import 'package:nojoum/core/network/token_storage.dart';
@@ -36,11 +37,15 @@ void main() {
       ? ForecasterRepositoryMock()
       : ForecasterRepositoryApi(apiClient);
 
+  final platformDark =
+      WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+          Brightness.dark;
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => app_theme.ThemeProvider()),
         Provider<AuthRepository>.value(value: authRepository),
         Provider<PredictionRepository>.value(value: predictionRepository),
         Provider<ForecasterRepository>.value(value: forecasterRepository),
@@ -66,13 +71,15 @@ void main() {
           ),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(initTheme: platformDark ? AppTheme.dark() : AppTheme.light()),
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.initTheme});
+
+  final ThemeData initTheme;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -90,23 +97,30 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final localProvider = context.watch<LocaleProvider>();
-    final themeProvider = context.watch<ThemeProvider>();
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appName,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: themeProvider.mode,
-      locale: localProvider.locale,
-      supportedLocales: const [Locale('ar'), Locale('en')],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      routerConfig: _router,
+    return ThemeProvider(
+      initTheme: widget.initTheme,
+      builder: (context, theme) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appName,
+          theme: theme,
+          locale: localProvider.locale,
+          supportedLocales: const [Locale('ar'), Locale('en')],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routerConfig: _router,
+          builder: (context, child) {
+            return ThemeSwitchingArea(
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+        );
+      },
     );
   }
 }
