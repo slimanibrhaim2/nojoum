@@ -158,6 +158,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get days => 'أيام';
 
   @override
+  String get minutes => 'دقائق';
+
+  @override
   String get onboarded => 'اكتمل الإعداد';
 
   @override
@@ -216,7 +219,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get endTime => 'إلى';
 
   @override
-  String get applyHours => 'استخدم هذه الساعات لكل يوم محدد';
+  String get addPeriod => 'إضافة فترة';
+
+  @override
+  String get deletePeriodTitle => 'حذف هذه الفترة؟';
+
+  @override
+  String get deletePeriodMessage => 'سيتم إزالة هذا الوقت من اليوم.';
+
+  @override
+  String get delete => 'حذف';
 
   @override
   String get hourLabel => 'الساعة';

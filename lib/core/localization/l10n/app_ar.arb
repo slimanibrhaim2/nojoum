@@ -48,6 +48,7 @@
   "bufferMinutes": "فاصل بين الجلسات",
   "minimumNotice": "يجب الحجز قبل",
   "days": "أيام",
+  "minutes": "دقائق",
   "onboarded": "اكتمل الإعداد",
   "yes": "نعم",
   "no": "لا",
@@ -67,7 +68,10 @@
   "noAvailability": "لا توجد ساعات أسبوعية بعد. اضغط تعديل لإضافتها.",
   "startTime": "من",
   "endTime": "إلى",
-  "applyHours": "استخدم هذه الساعات لكل يوم محدد",
+  "addPeriod": "إضافة فترة",
+  "deletePeriodTitle": "حذف هذه الفترة؟",
+  "deletePeriodMessage": "سيتم إزالة هذا الوقت من اليوم.",
+  "delete": "حذف",
   "hourLabel": "الساعة",
   "minuteLabel": "الدقائق"
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/localization/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/nojoum_confirm_dialog.dart';
 import '../../../../shared/widgets/nojoum_toast.dart';
 import '../../../forecaster/domain/availability.dart';
 import '../../../forecaster/viewmodel/forecaster_viewmodels.dart';
@@ -23,12 +24,24 @@ class ForecasterAvailabilityEditor extends StatefulWidget {
       _ForecasterAvailabilityEditorState();
 }
 
+class _DaySchedule {
+  _DaySchedule({
+    required this.dayOfWeek,
+    required this.enabled,
+    required this.periods,
+  });
+
+  final int dayOfWeek;
+  bool enabled;
+  List<AvailabilityRule> periods;
+}
+
 class _ForecasterAvailabilityEditorState
     extends State<ForecasterAvailabilityEditor> {
   static const _defaultStart = '10:00:00';
   static const _defaultEnd = '17:00:00';
 
-  late List<AvailabilityRule> _days;
+  late List<_DaySchedule> _days;
   bool _editing = false;
 
   @override
@@ -45,19 +58,46 @@ class _ForecasterAvailabilityEditorState
     }
   }
 
-  List<AvailabilityRule> _fromAvailability(ForecasterAvailability data) {
-    return [
-      for (var day = 0; day < 7; day++)
-        data.rules.firstWhere(
-          (rule) => rule.dayOfWeek == day,
-          orElse: () => AvailabilityRule(
-            dayOfWeek: day,
-            startTime: _defaultStart,
-            endTime: _defaultEnd,
-            isActive: false,
-          ),
+  List<_DaySchedule> _fromAvailability(ForecasterAvailability data) {
+    final days = <_DaySchedule>[];
+    for (var day = 0; day < 7; day++) {
+      final periods = data.rules
+          .where((rule) => rule.dayOfWeek == day && rule.isActive)
+          .map((rule) => rule.copyWith(isActive: true))
+          .toList()
+        ..sort((a, b) => a.startTime.compareTo(b.startTime));
+      days.add(
+        _DaySchedule(
+          dayOfWeek: day,
+          enabled: periods.isNotEmpty,
+          periods: periods.isEmpty
+              ? [
+                  AvailabilityRule(
+                    dayOfWeek: day,
+                    startTime: _defaultStart,
+                    endTime: _defaultEnd,
+                  ),
+                ]
+              : periods,
         ),
-    ];
+      );
+    }
+    return days;
+  }
+
+  AvailabilityRule _defaultPeriod(int dayOfWeek) {
+    AvailabilityRule? template;
+    for (final day in _days) {
+      if (day.enabled && day.periods.isNotEmpty) {
+        template = day.periods.first;
+        break;
+      }
+    }
+    return AvailabilityRule(
+      dayOfWeek: dayOfWeek,
+      startTime: template?.startTime ?? _defaultStart,
+      endTime: template?.endTime ?? _defaultEnd,
+    );
   }
 
   void _startEditing() => setState(() => _editing = true);
@@ -71,9 +111,12 @@ class _ForecasterAvailabilityEditorState
 
   Future<void> _save() async {
     final t = AppLocalizations.of(context);
-    final rules = _days
-        .where((day) => day.isActive || (day.id != null && day.id!.isNotEmpty))
-        .toList();
+    final rules = <AvailabilityRule>[
+      for (final day in _days)
+        if (day.enabled)
+          for (final period in day.periods)
+            period.copyWith(dayOfWeek: day.dayOfWeek, isActive: true),
+    ];
     final ok = await widget.viewModel.saveAvailability(
       ForecasterAvailability(
         forecasterId: widget.availability.forecasterId,
@@ -92,10 +135,14 @@ class _ForecasterAvailabilityEditorState
     );
   }
 
-  Future<void> _pickTime(int index, {required bool start}) async {
+  Future<void> _pickTime(
+    int dayIndex,
+    int periodIndex, {
+    required bool start,
+  }) async {
     if (!_editing) return;
-    final day = _days[index];
-    final current = _parseTime(start ? day.startTime : day.endTime);
+    final period = _days[dayIndex].periods[periodIndex];
+    final current = _parseTime(start ? period.startTime : period.endTime);
     final picked = await showDialog<TimeOfDay>(
       context: context,
       builder: (context) => _AvailabilityTimeDialog(initial: current),
@@ -103,56 +150,65 @@ class _ForecasterAvailabilityEditorState
     if (picked == null) return;
     setState(() {
       final value = _formatTime(picked);
-      _days[index] = start
-          ? day.copyWith(startTime: value)
-          : day.copyWith(endTime: value);
+      _days[dayIndex].periods[periodIndex] = start
+          ? period.copyWith(startTime: value)
+          : period.copyWith(endTime: value);
     });
   }
 
-  void _toggle(int index, bool active) {
+  void _toggle(int index, bool enabled) {
     setState(() {
       final day = _days[index];
-      var start = day.startTime;
-      var end = day.endTime;
-      if (active) {
-        final template = _days.firstWhere(
-          (item) => item.isActive,
-          orElse: () => const AvailabilityRule(
-            dayOfWeek: 0,
-            startTime: _defaultStart,
-            endTime: _defaultEnd,
-          ),
-        );
-        if (!day.isActive) {
-          start = template.startTime;
-          end = template.endTime;
-        }
+      day.enabled = enabled;
+      if (enabled && day.periods.isEmpty) {
+        day.periods = [_defaultPeriod(day.dayOfWeek)];
       }
-      _days[index] = day.copyWith(
-        isActive: active,
-        startTime: start,
-        endTime: end,
-      );
     });
   }
 
-  void _applyHoursToSelected() {
-    final first = _days.firstWhere(
-      (day) => day.isActive,
-      orElse: () => const AvailabilityRule(
-        dayOfWeek: 0,
-        startTime: _defaultStart,
-        endTime: _defaultEnd,
-      ),
-    );
+  void _addPeriod(int dayIndex) {
     setState(() {
-      _days = [
-        for (final day in _days)
-          day.isActive
-              ? day.copyWith(startTime: first.startTime, endTime: first.endTime)
-              : day,
+      final day = _days[dayIndex];
+      final last = day.periods.isEmpty ? null : day.periods.last;
+      day.periods = [
+        ...day.periods,
+        AvailabilityRule(
+          dayOfWeek: day.dayOfWeek,
+          startTime: last?.endTime ?? _defaultStart,
+          endTime: last == null ? _defaultEnd : _shiftHour(last.endTime, 2),
+        ),
       ];
     });
+  }
+
+  Future<void> _removePeriod(int dayIndex, int periodIndex) async {
+    final day = _days[dayIndex];
+    if (day.periods.length <= 1) return;
+    final t = AppLocalizations.of(context);
+    final confirmed = await NojoumConfirmDialog.show(
+      context,
+      title: t.deletePeriodTitle,
+      message: t.deletePeriodMessage,
+      confirmLabel: t.delete,
+      cancelLabel: t.cancel,
+      kind: NojoumConfirmKind.danger,
+      icon: Icons.schedule_rounded,
+    );
+    if (!confirmed || !mounted) return;
+    setState(() {
+      day.periods = [
+        for (var i = 0; i < day.periods.length; i++)
+          if (i != periodIndex) day.periods[i],
+      ];
+    });
+  }
+
+  String _shiftHour(String time, int hours) {
+    final parts = time.split(':');
+    final hour = ((int.tryParse(parts.first) ?? 10) + hours).clamp(0, 23);
+    final minute = parts.length > 1 ? parts[1] : '00';
+    final second = parts.length > 2 ? parts[2] : '00';
+    return '${hour.toString().padLeft(2, '0')}:$minute:$second';
   }
 
   TimeOfDay _parseTime(String value) {
@@ -181,7 +237,7 @@ class _ForecasterAvailabilityEditorState
     final t = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final saving = widget.viewModel.savingAvailability;
-    final activeDays = _days.where((day) => day.isActive).toList();
+    final activeDays = _days.where((day) => day.enabled).toList();
 
     return Card(
       child: Padding(
@@ -229,30 +285,25 @@ class _ForecasterAvailabilityEditorState
                 padding: const EdgeInsets.only(top: 8, bottom: 4),
                 child: Text(
                   t.noAvailability,
-                  style: TextStyle(color: scheme.onSurface.withValues(alpha: 0.8)),
+                  style: TextStyle(
+                    color: scheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
               ),
-            if (_editing) ...[
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: TextButton(
-                  onPressed: _applyHoursToSelected,
-                  child: Text(t.applyHours),
-                ),
-              ),
-            ],
             for (var i = 0; i < _days.length; i++)
-              _DayRow(
+              _DayCard(
                 name: _dayName(context, _days[i].dayOfWeek),
-                rule: _days[i],
+                day: _days[i],
                 editing: _editing,
-                startLabel: _labelFor(context, _days[i].startTime),
-                endLabel: _labelFor(context, _days[i].endTime),
+                addPeriodLabel: t.addPeriod,
+                labelFor: (value) => _labelFor(context, value),
                 onToggle: (value) => _toggle(i, value),
-                onStart: () => _pickTime(i, start: true),
-                onEnd: () => _pickTime(i, start: false),
-                fromLabel: t.startTime,
-                toLabel: t.endTime,
+                onAddPeriod: () => _addPeriod(i),
+                onRemovePeriod: (periodIndex) => _removePeriod(i, periodIndex),
+                onPickStart: (periodIndex) =>
+                    _pickTime(i, periodIndex, start: true),
+                onPickEnd: (periodIndex) =>
+                    _pickTime(i, periodIndex, start: false),
               ),
             if (_editing) ...[
               const SizedBox(height: 16),
@@ -292,72 +343,204 @@ class _ForecasterAvailabilityEditorState
   }
 }
 
-class _DayRow extends StatelessWidget {
-  const _DayRow({
+class _DayCard extends StatelessWidget {
+  const _DayCard({
     required this.name,
-    required this.rule,
+    required this.day,
     required this.editing,
-    required this.startLabel,
-    required this.endLabel,
+    required this.addPeriodLabel,
+    required this.labelFor,
     required this.onToggle,
-    required this.onStart,
-    required this.onEnd,
-    required this.fromLabel,
-    required this.toLabel,
+    required this.onAddPeriod,
+    required this.onRemovePeriod,
+    required this.onPickStart,
+    required this.onPickEnd,
   });
 
   final String name;
-  final AvailabilityRule rule;
+  final _DaySchedule day;
   final bool editing;
-  final String startLabel;
-  final String endLabel;
+  final String addPeriodLabel;
+  final String Function(String value) labelFor;
   final ValueChanged<bool> onToggle;
-  final VoidCallback onStart;
-  final VoidCallback onEnd;
-  final String fromLabel;
-  final String toLabel;
+  final VoidCallback onAddPeriod;
+  final ValueChanged<int> onRemovePeriod;
+  final ValueChanged<int> onPickStart;
+  final ValueChanged<int> onPickEnd;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final active = rule.isActive;
-    if (!editing && !active) return const SizedBox.shrink();
+    if (!editing && !day.enabled) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              if (editing)
+                Switch.adaptive(value: day.enabled, onChanged: onToggle)
+              else
+                const Icon(
+                  Icons.check_circle,
+                  size: 20,
+                  color: Color(0xFF2BB673),
+                ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                    color: scheme.onSurface,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (day.enabled) ...[
+            const SizedBox(height: 10),
+            for (var i = 0; i < day.periods.length; i++)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _PeriodTile(
+                  startLabel: labelFor(day.periods[i].startTime),
+                  endLabel: labelFor(day.periods[i].endTime),
+                  editing: editing,
+                  canRemove: editing && day.periods.length > 1,
+                  onStart: () => onPickStart(i),
+                  onEnd: () => onPickEnd(i),
+                  onRemove: () => onRemovePeriod(i),
+                ),
+              ),
+            if (editing)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  onPressed: onAddPeriod,
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: Text(addPeriodLabel),
+                ),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PeriodTile extends StatelessWidget {
+  const _PeriodTile({
+    required this.startLabel,
+    required this.endLabel,
+    required this.editing,
+    required this.canRemove,
+    required this.onStart,
+    required this.onEnd,
+    required this.onRemove,
+  });
+
+  final String startLabel;
+  final String endLabel;
+  final bool editing;
+  final bool canRemove;
+  final VoidCallback onStart;
+  final VoidCallback onEnd;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.75),
+        ),
+      ),
       child: Row(
         children: [
-          if (editing)
-            Switch.adaptive(value: active, onChanged: onToggle)
-          else
-            Icon(
-              Icons.check_circle,
-              size: 20,
-              color: const Color(0xFF2BB673),
-            ),
-          const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              name,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: scheme.onSurface,
-              ),
+            child: _PeriodTimeButton(
+              value: startLabel,
+              enabled: editing,
+              onTap: onStart,
             ),
           ),
-          if (active) ...[
-            _TimeChip(
-              label: '$fromLabel $startLabel',
-              onTap: editing ? onStart : null,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.arrow_forward_rounded,
+              size: 18,
+              color: scheme.primary,
             ),
-            const SizedBox(width: 6),
-            _TimeChip(
-              label: '$toLabel $endLabel',
-              onTap: editing ? onEnd : null,
+          ),
+          Expanded(
+            child: _PeriodTimeButton(
+              value: endLabel,
+              enabled: editing,
+              onTap: onEnd,
+            ),
+          ),
+          if (canRemove) ...[
+            const SizedBox(width: 4),
+            IconButton(
+              onPressed: onRemove,
+              visualDensity: VisualDensity.compact,
+              icon: Icon(Icons.close_rounded, color: scheme.error),
+              tooltip:
+                  MaterialLocalizations.of(context).deleteButtonTooltip,
             ),
           ],
         ],
       ),
+    );
+  }
+}
+
+class _PeriodTimeButton extends StatelessWidget {
+  const _PeriodTimeButton({
+    required this.value,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final String value;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final child = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w800,
+          color: scheme.onSurface,
+        ),
+      ),
+    );
+
+    return Material(
+      color: scheme.primary.withValues(alpha: enabled ? 0.14 : 0.08),
+      borderRadius: BorderRadius.circular(12),
+      child: enabled
+          ? InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(12),
+              child: child,
+            )
+          : child,
     );
   }
 }
@@ -675,33 +858,3 @@ class _TimeDigitField extends StatelessWidget {
   }
 }
 
-class _TimeChip extends StatelessWidget {
-  const _TimeChip({required this.label, this.onTap});
-
-  final String label;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Material(
-      color: scheme.primary.withValues(alpha: 0.12),
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: scheme.onSurface,
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

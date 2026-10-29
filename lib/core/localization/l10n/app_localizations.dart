@@ -386,6 +386,12 @@ abstract class AppLocalizations {
   /// **'days'**
   String get days;
 
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
   /// No description provided for @onboarded.
   ///
   /// In en, this message translates to:
@@ -494,11 +500,29 @@ abstract class AppLocalizations {
   /// **'To'**
   String get endTime;
 
-  /// No description provided for @applyHours.
+  /// No description provided for @addPeriod.
   ///
   /// In en, this message translates to:
-  /// **'Use these hours on every selected day'**
-  String get applyHours;
+  /// **'Add period'**
+  String get addPeriod;
+
+  /// No description provided for @deletePeriodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this period?'**
+  String get deletePeriodTitle;
+
+  /// No description provided for @deletePeriodMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This time range will be removed from the day.'**
+  String get deletePeriodMessage;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 
   /// No description provided for @hourLabel.
   ///

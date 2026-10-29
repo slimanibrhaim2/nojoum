@@ -159,6 +159,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get days => 'days';
 
   @override
+  String get minutes => 'minutes';
+
+  @override
   String get onboarded => 'Onboarded';
 
   @override
@@ -216,7 +219,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endTime => 'To';
 
   @override
-  String get applyHours => 'Use these hours on every selected day';
+  String get addPeriod => 'Add period';
+
+  @override
+  String get deletePeriodTitle => 'Delete this period?';
+
+  @override
+  String get deletePeriodMessage =>
+      'This time range will be removed from the day.';
+
+  @override
+  String get delete => 'Delete';
 
   @override
   String get hourLabel => 'Hour';
