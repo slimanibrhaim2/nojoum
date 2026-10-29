@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/localization/l10n/app_localizations.dart';
@@ -30,16 +32,17 @@ class ForecasterProfileEditor extends StatefulWidget {
 
 class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
   static const _currencies = ['USD', 'EUR', 'GBP', 'AED', 'SAR', 'SYP'];
-  static const _timeZones = [
-    'UTC',
-    'Asia/Damascus',
-    'Asia/Beirut',
-    'Asia/Riyadh',
-    'Africa/Cairo',
-    'Europe/Istanbul',
-    'Europe/London',
-  ];
+  static final _timeZones = _availableTimeZones();
   static const _types = [0, 1, 2, 4, 8, 16, 32, 64, 128];
+
+  static List<String> _availableTimeZones() {
+    tz_data.initializeTimeZones();
+    final zones = tz.timeZoneDatabase.locations.keys
+        .where((zone) => zone != 'Etc/UTC')
+        .toList()
+      ..sort();
+    return List.unmodifiable(['UTC', ...zones.where((zone) => zone != 'UTC')]);
+  }
 
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameCtrl;
@@ -494,7 +497,7 @@ class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
                         label: t.minimumNotice,
                         icon: Icons.notifications_active_rounded,
                         color: const Color(0xFFFF5C7A),
-                      ),
+                      ).copyWith(suffixText: t.days),
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(

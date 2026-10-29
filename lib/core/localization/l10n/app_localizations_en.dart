@@ -153,7 +153,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bufferMinutes => 'Buffer between sessions';
 
   @override
-  String get minimumNotice => 'Minimum notice';
+  String get minimumNotice => 'Must book before';
+
+  @override
+  String get days => 'days';
 
   @override
   String get onboarded => 'Onboarded';

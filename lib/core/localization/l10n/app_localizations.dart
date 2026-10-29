@@ -377,8 +377,14 @@ abstract class AppLocalizations {
   /// No description provided for @minimumNotice.
   ///
   /// In en, this message translates to:
-  /// **'Minimum notice'**
+  /// **'Must book before'**
   String get minimumNotice;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
 
   /// No description provided for @onboarded.
   ///

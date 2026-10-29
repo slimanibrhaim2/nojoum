@@ -152,7 +152,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bufferMinutes => 'فاصل بين الجلسات';
 
   @override
-  String get minimumNotice => 'حد أدنى للإشعار';
+  String get minimumNotice => 'يجب الحجز قبل';
+
+  @override
+  String get days => 'أيام';
 
   @override
   String get onboarded => 'اكتمل الإعداد';
