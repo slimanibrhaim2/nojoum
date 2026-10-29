@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @forecastingProfile.
   ///
   /// In en, this message translates to:
-  /// **'Forecasting profile'**
+  /// **'Account setting '**
   String get forecastingProfile;
 
   /// No description provided for @timeZone.

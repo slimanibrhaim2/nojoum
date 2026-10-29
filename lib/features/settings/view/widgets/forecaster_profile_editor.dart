@@ -8,6 +8,7 @@ import '../../../../core/config/app_config.dart';
 import '../../../../core/localization/l10n/app_localizations.dart';
 import '../../../../core/mock/fake_ids.dart';
 import '../../../../shared/widgets/nojoum_toast.dart';
+import '../../../../shared/widgets/photo_lightbox.dart';
 import '../../../../shared/widgets/remote_avatar.dart';
 import '../../../forecaster/domain/forecaster_me_profile.dart';
 import '../../../forecaster/domain/forecaster_profile_update.dart';
@@ -99,6 +100,14 @@ class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
     _bufferCtrl.dispose();
     _noticeCtrl.dispose();
     super.dispose();
+  }
+
+  void _previewPhoto() {
+    PhotoLightbox.open(
+      context,
+      networkUrl: AppConfig.mediaUrl(widget.profile.imagePath),
+      filePath: _localImagePath,
+    );
   }
 
   Future<void> _pickImage() async {
@@ -275,7 +284,8 @@ class _ForecasterProfileEditorState extends State<ForecasterProfileEditor> {
               _AvatarEditor(
                 networkUrl: AppConfig.mediaUrl(profile.imagePath),
                 localPath: _localImagePath,
-                onTap: _editing ? _pickImage : null,
+                onTap: _editing ? _pickImage : _previewPhoto,
+                onLongPress: _previewPhoto,
                 label: t.changePhoto,
                 editing: _editing,
               ),
@@ -578,6 +588,7 @@ class _AvatarEditor extends StatelessWidget {
     required this.networkUrl,
     required this.localPath,
     required this.onTap,
+    required this.onLongPress,
     required this.label,
     required this.editing,
   });
@@ -585,27 +596,32 @@ class _AvatarEditor extends StatelessWidget {
   final String networkUrl;
   final String? localPath;
   final VoidCallback? onTap;
+  final VoidCallback onLongPress;
   final String label;
   final bool editing;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final photo = localPath != null
-        ? ClipOval(
-            child: Image.file(
-              File(localPath!),
-              width: 96,
-              height: 96,
-              fit: BoxFit.cover,
-            ),
-          )
-        : RemoteAvatar(url: networkUrl, radius: 48);
+    final photo = Hero(
+      tag: 'profile-photo',
+      child: localPath != null
+          ? ClipOval(
+              child: Image.file(
+                File(localPath!),
+                width: 96,
+                height: 96,
+                fit: BoxFit.cover,
+              ),
+            )
+          : RemoteAvatar(url: networkUrl, radius: 48),
+    );
 
     return Column(
       children: [
         GestureDetector(
           onTap: onTap,
+          onLongPress: onLongPress,
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [

@@ -138,7 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navForecasters => 'Forecasters';
 
   @override
-  String get forecastingProfile => 'Forecasting profile';
+  String get forecastingProfile => 'Account setting ';
 
   @override
   String get timeZone => 'Time zone';

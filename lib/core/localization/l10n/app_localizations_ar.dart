@@ -137,7 +137,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navForecasters => 'المنجمين';
 
   @override
-  String get forecastingProfile => 'ملف التنجيم';
+  String get forecastingProfile => ' الملف الشخصي';
 
   @override
   String get timeZone => 'المنطقة الزمنية';
